@@ -125,7 +125,13 @@
       "Bash(dir /b .env*)",
       "Bash(wmic process where \"ProcessId=17100\" delete)",
       "Bash(timeout /t 8 /nobreak)",
-      "Bash(wmic process where \"ProcessId=11696\" delete)"
+      "Bash(wmic process where \"ProcessId=11696\" delete)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: Migração de uploads para MinIO e melhorias no sistema\n\n- Migra sistema de arquivos locais para MinIO (armazenamento em rede)\n- Cria serviço unificado de upload (upload.service.ts)\n- Atualiza URLs de imagens/vídeos para suportar acesso externo\n- Corrige detecção de API para funcionar via Ngrok\n- Organiza arquivos do projeto em pastas (scripts/, docs/)\n- Aumenta tamanho do modal de visualização de fotos (4x maior)\n- Adiciona suporte para acesso de múltiplas máquinas na rede\n- Remove variável VITE_API_URL para usar detecção dinâmica\n\nArquivos novos funcionam em qualquer máquina da rede via MinIO.\nArquivos antigos continuam acessíveis via backend local.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git init:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: Sistema completo de scanner de códigos de barras USB\n\n- Serviço de scanner com detecção automática de dispositivos USB\n- Suporte para múltiplos scanners simultâneos\n- Integração com API REST para envio de bipagens\n- Interface de configuração e gerenciamento\n- Sistema de instalação automática como serviço Windows\n- Monitoramento e logs detalhados\n- Configuração de mapeamento de scanners por dispositivo\n\nComponentes principais:\n- scanner_service.py: Serviço principal de escaneamento\n- device_manager.py: Gerenciamento de dispositivos USB\n- api_client.py: Cliente HTTP para comunicação com backend\n- Instaladores e scripts de build incluídos\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git config:*)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)"
     ],
     "deny": [],
     "ask": []

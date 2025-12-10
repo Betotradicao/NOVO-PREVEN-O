@@ -1,0 +1,54 @@
+# ==================================
+# DOCKERFILE BACKEND - PRODUÇÃO
+# ==================================
+# Build otimizado em 2 estágios para minimizar tamanho final
+
+# ===== ESTÁGIO 1: BUILD =====
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copiar apenas package files primeiro (cache de dependências)
+COPY package*.json ./
+COPY tsconfig.json ./
+
+# Instalar TODAS as dependências (incluindo devDependencies para build)
+RUN npm ci
+
+# Copiar código fonte
+COPY . .
+
+# Build do TypeScript
+RUN npm run build
+
+# ===== ESTÁGIO 2: PRODUÇÃO =====
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copiar apenas package files
+COPY package*.json ./
+
+# Instalar APENAS dependências de produção
+RUN npm ci --only=production && \
+    npm cache clean --force
+
+# Copiar código compilado do estágio anterior
+COPY --from=builder /app/dist ./dist
+
+# Criar pasta de uploads (para compatibilidade com arquivos antigos)
+RUN mkdir -p /app/uploads/images /app/uploads/videos
+
+# Expor porta
+EXPOSE 3001
+
+# Variáveis de ambiente (valores padrão, sobrescritos pelo docker-compose)
+ENV NODE_ENV=production
+ENV PORT=3001
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3001/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Comando de inicialização
+CMD ["node", "dist/index.js"]

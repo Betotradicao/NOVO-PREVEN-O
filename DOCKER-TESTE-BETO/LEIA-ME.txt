@@ -1,0 +1,59 @@
+========================================
+  PREVENCAO NO RADAR - VERSAO DOCKER
+========================================
+
+📋 O QUE É ESTA PASTA?
+
+Esta é a versão Docker de PRODUÇÃO do sistema.
+Use para instalar em outras máquinas (lojas, filiais, etc).
+
+⚠️  IMPORTANTE: NÃO conflita com o Docker de desenvolvimento!
+
+
+🚀 COMO INSTALAR?
+
+1. Certifique-se que o Docker Desktop está instalado
+2. Clique duas vezes em: INSTALAR.bat
+3. Aguarde a instalação (5-10 minutos)
+4. Pronto!
+
+
+📁 ARQUIVOS PRINCIPAIS:
+
+INSTALAR.bat    → Instalar o sistema pela primeira vez
+INICIAR.bat     → Iniciar o sistema
+PARAR.bat       → Parar o sistema
+ATUALIZAR.bat   → Atualizar para nova versão
+STATUS.bat      → Ver status dos containers
+VER-LOGS.bat    → Ver logs em tempo real
+README.md       → Documentação completa
+
+
+🔧 COMANDOS RÁPIDOS:
+
+Instalar:        Clique em INSTALAR.bat
+Iniciar:         Clique em INICIAR.bat
+Parar:           Clique em PARAR.bat
+Ver logs:        Clique em VER-LOGS.bat
+
+
+📊 PORTAS UTILIZADAS:
+
+Frontend:        8080
+Backend API:     3011
+MinIO Storage:   9010
+MinIO Console:   9011
+PostgreSQL:      5434
+
+
+💡 DICAS:
+
+- Leia o README.md para mais informações
+- Use STATUS.bat para verificar se está rodando
+- Use VER-LOGS.bat para debug
+- Backup: Volumes Docker em C:\ProgramData\Docker\volumes
+
+
+❓ DÚVIDAS?
+
+Leia a documentação completa em README.md
