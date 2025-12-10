@@ -147,6 +147,13 @@ docker compose up -d
 
 ## ⚡ VERIFICAÇÃO AUTOMÁTICA (CRON) - **MUITO IMPORTANTE!**
 
+### ✅ CORREÇÕES APLICADAS (versão atual):
+
+- **Timezone UTC-3 Brasil**: Datas interpretadas corretamente em horário de Brasília
+- **API de vendas funcionando**: `/api/sells` retorna vendas corretamente
+- **CRON automático**: Verifica vendas a cada 2 minutos sem janelas pretas
+- **Docker completo**: Tudo roda dentro dos containers, sem dependências externas
+
 ### O que é e para que serve?
 
 O sistema inclui um **serviço de CRON** que roda automaticamente em background e faz:
