@@ -236,11 +236,16 @@ export class DailyVerificationCommand {
         });
       }
 
+      // Formata a data com timezone do Brasil para evitar conversão incorreta
+      const sellDate = sale.dataHoraVenda
+        ? `${sale.dataHoraVenda}-03:00` // Adiciona timezone do Brasil (UTC-3)
+        : `${date} 00:00:00-03:00`;
+
       const sellRecord = {
         activated_product_id: activatedProductId,
         product_id: sale.codProduto,
         product_description: sale.desProduto,
-        sell_date: sale.dataHoraVenda || `${date} 00:00:00`,
+        sell_date: sellDate,
         sell_value_cents: saleValueCents,
         product_weight: sale.qtdTotalProduto,
         bip_id: matchedBip ? matchedBip.id : null,

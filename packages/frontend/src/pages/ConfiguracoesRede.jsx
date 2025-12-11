@@ -86,7 +86,7 @@ export default function ConfiguracoesRede() {
                   value={authUsername}
                   onChange={(e) => setAuthUsername(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  placeholder="Digite o usuário master"
+                  placeholder=""
                   autoFocus
                   required
                 />
@@ -102,7 +102,7 @@ export default function ConfiguracoesRede() {
                   value={authPassword}
                   onChange={(e) => setAuthPassword(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  placeholder="Digite a senha"
+                  placeholder=""
                   required
                 />
               </div>
