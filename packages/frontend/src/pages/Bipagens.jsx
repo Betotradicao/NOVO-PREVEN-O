@@ -263,12 +263,16 @@ export default function Bipagens() {
   // Formatação de data e hora (mantém horário original do banco)
   // Formatação de data/hora da BIPAGEM (event_date)
   // Bipagens já são salvas com horário local correto
+  // Remove timezone e trata como horário local
   const formatDateTime = (dateString) => {
     if (!dateString) return '-';
 
-    const date = new Date(dateString);
+    // Remove timezone se existir e trata como horário local do Brasil
+    // Isso evita conversão de timezone pelo navegador
+    const dateStr = dateString.replace(/[+-]\d{2}:\d{2}$/, '').replace('Z', '');
+    const date = new Date(dateStr);
 
-    // Formata normalmente sem conversão de timezone
+    // Formata usando horário local (não UTC)
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
