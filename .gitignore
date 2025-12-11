@@ -70,5 +70,6 @@ docker-compose.override.yml
 envprod.yaml.portainer-credentials.md
 nul
 
-# Backups
+# Backups e Aprendizados
 backups/
+BACKUPS-E-APRENDIZADOS/
