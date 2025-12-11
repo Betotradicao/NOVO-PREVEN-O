@@ -581,10 +581,22 @@ Todas as credenciais importantes estão organizadas na pasta **`CREDENCIAIS/`**:
 |---------|-----|-----------|
 | **Frontend** | http://localhost:3004 | Interface web do sistema |
 | **Backend** | http://localhost:3001 | API REST |
-| **MinIO Console** | http://localhost:9011 | Gerenciamento de arquivos |
+| **MinIO API** | http://localhost:9010 | Servidor de arquivos (fotos/vídeos) |
+| **MinIO Console** | http://localhost:9011 | Gerenciamento de arquivos (interface) |
 | **Swagger** | http://localhost:3001/api-docs | Documentação da API |
 
-**Login padrão**:
+### 📸 MinIO - Configuração de Acesso
+
+O MinIO usa **duas portas diferentes**:
+- **Porta 9010**: API de arquivos (usado pelo backend e navegadores para acessar imagens/vídeos)
+- **Porta 9011**: Console de gerenciamento (interface web administrativa)
+
+**URLs públicas** (para acesso externo):
+- Configure no painel de Configurações do sistema
+- Endpoint público: IP da rede local (ex: `10.6.1.171`)
+- Porta pública: `9010`
+
+**Login padrão do sistema**:
 - Email: `admin@tradicaosjc.com.br`
 - Senha: `admin123`
 
