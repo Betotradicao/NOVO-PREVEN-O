@@ -412,8 +412,8 @@ roberto-prevencao-no-radar-main/
 │
 ├── 📁 InstaladorDOCKER/           # Instalação via Docker
 │   ├── INSTALAR-AUTO.bat          # ← Instalador automático (1 botão)
-│   ├── docker-compose.yml
-│   ├── docker-compose.portainer.yml
+│   ├── docker-compose-producao.yml              # Produção (padrão)
+│   ├── docker-compose-producao-portainer.yml    # Produção + Portainer Web UI
 │   ├── Dockerfile.backend
 │   ├── Dockerfile.frontend
 │   └── README.md
@@ -451,7 +451,7 @@ roberto-prevencao-no-radar-main/
 ├── 📁 minio-data/                  # Armazenamento de fotos/vídeos (27 MB+)
 │
 ├── 📄 ecosystem.config.js          # Configuração PM2
-├── 📄 docker-compose.yml           # Docker local (desenvolvimento)
+├── 📄 docker-compose-desenvolvimento.yml  # Docker local (desenvolvimento)
 ├── 📄 package.json                 # Dependências do monorepo
 └── 📄 README.md                    # Este arquivo
 ```
@@ -473,12 +473,41 @@ roberto-prevencao-no-radar-main/
 
 ## 🗂️ Arquivos de Configuração Importantes
 
-### **`.dockerignore`** vs **`docker-compose.yml`**
+### 🐳 **Arquivos Docker Compose - Qual Usar?**
+
+O projeto possui **3 arquivos Docker Compose** com nomenclatura clara:
+
+| Arquivo | Onde fica | Para que serve | Quando usar |
+|---------|-----------|----------------|-------------|
+| **`docker-compose-desenvolvimento.yml`** | Raiz do projeto | Hot reload, logs verbosos, portas debug | Desenvolvimento local (você programando) |
+| **`docker-compose-producao.yml`** | InstaladorDOCKER/ | Build otimizado, senhas seguras, produção | Instalação em cliente/produção |
+| **`docker-compose-producao-portainer.yml`** | InstaladorDOCKER/ | Produção + Portainer (painel web) | VPS com gerenciamento via navegador |
+
+#### 📝 Exemplos de uso:
+
+```bash
+# Desenvolvimento (raiz do projeto)
+docker compose -f docker-compose-desenvolvimento.yml up
+
+# Produção (InstaladorDOCKER/)
+cd InstaladorDOCKER
+docker compose -f docker-compose-producao.yml up -d
+
+# Produção + Portainer (VPS)
+cd InstaladorDOCKER
+docker compose -f docker-compose-producao-portainer.yml up -d
+```
+
+**Nota:** O `INSTALAR-AUTO.bat` já usa automaticamente o `docker-compose-producao.yml`!
+
+---
+
+### **`.dockerignore`** vs **`docker-compose-*.yml`**
 
 | Arquivo | O que é | Para que serve |
 |---------|---------|----------------|
 | **`.dockerignore`** | Lista de exclusão | Define o que **NÃO vai** para dentro da imagem Docker |
-| **`docker-compose.yml`** | Orquestração | Define **como rodar** múltiplos containers Docker |
+| **`docker-compose-*.yml`** | Orquestração | Define **como rodar** múltiplos containers Docker |
 
 #### 📝 `.dockerignore` - O que NÃO vai pro Docker:
 ```
@@ -491,14 +520,22 @@ logs/             ← Logs temporários
 
 **Por quê?** Deixar a imagem Docker **menor** (de 2 GB para 500 MB) e **mais rápida** para buildar.
 
-#### 🐳 `docker-compose.yml` - Como rodar os containers:
+#### 🐳 `docker-compose-*.yml` - Como rodar os containers:
+
+Todos os arquivos docker-compose definem estes serviços:
 ```yaml
 services:
   postgres:        ← Banco de dados
   backend:         ← API Express
   frontend:        ← React App
   minio:           ← Armazenamento de arquivos
+  # + portainer (apenas docker-compose-producao-portainer.yml)
 ```
+
+**Diferença entre eles:**
+- `desenvolvimento`: Hot reload, portas debug, logs detalhados
+- `producao`: Build otimizado, senhas via .env, modo produção
+- `producao-portainer`: Produção + interface web Portainer (porta 9000)
 
 **Por quê?** Orquestrar múltiplos serviços que precisam conversar entre si.
 

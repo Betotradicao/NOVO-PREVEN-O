@@ -103,7 +103,7 @@ REM ETAPA 4: Build
 echo.
 echo [4/5] Construindo imagens Docker...
 echo Isso pode levar alguns minutos...
-docker compose build
+docker compose -f docker-compose-producao.yml build
 if errorlevel 1 (
     echo ERRO ao construir imagens
     pause
@@ -114,7 +114,7 @@ echo Build concluido!
 REM ETAPA 5: Iniciar
 echo.
 echo [5/5] Iniciando containers...
-docker compose up -d
+docker compose -f docker-compose-producao.yml up -d
 if errorlevel 1 (
     echo ERRO ao iniciar containers
     pause
