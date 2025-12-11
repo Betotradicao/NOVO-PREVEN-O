@@ -35,7 +35,7 @@ if ($minioProcess) {
 $env:MINIO_ROOT_USER = $minioUser
 $env:MINIO_ROOT_PASSWORD = $minioPassword
 
-$minioPath = Join-Path $appDir "minio.exe"
+$minioPath = Join-Path $appDir "InstaladorINTERNO\minio.exe"
 $minioData = Join-Path $appDir "minio-data"
 
 $psi = New-Object System.Diagnostics.ProcessStartInfo
@@ -71,8 +71,8 @@ if (-not $backendRunning -or -not $frontendRunning) {
 }
 
 # 6. Iniciar Ngrok (túneis para frontend e backend)
-$ngrokPath = Join-Path $appDir "ngrok.exe"
-$ngrokConfig = Join-Path $appDir "ngrok.yml"
+$ngrokPath = Join-Path $appDir "InstaladorINTERNO\ngrok.exe"
+$ngrokConfig = Join-Path $appDir "InstaladorINTERNO\ngrok.yml"
 
 if (Test-Path $ngrokPath) {
     # Verificar se ngrok já está rodando
