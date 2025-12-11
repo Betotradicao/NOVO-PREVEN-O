@@ -262,16 +262,20 @@ export default function Bipagens() {
 
   // Formatação de data e hora (mantém horário original do banco)
   const formatDateTime = (dateString) => {
-    // Trata a data como se fosse UTC para evitar conversão de timezone
-    const date = new Date(dateString + (dateString.includes('Z') ? '' : 'Z'));
+    if (!dateString) return '-';
 
-    // Formata manualmente para manter o horário exato do banco
-    const day = date.getUTCDate().toString().padStart(2, '0');
-    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
-    const year = date.getUTCFullYear();
-    const hours = date.getUTCHours().toString().padStart(2, '0');
-    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
-    const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+    // Remove timezone se existir e trata como horário local do Brasil
+    // Isso evita conversão de timezone pelo navegador
+    const dateStr = dateString.replace(/[+-]\d{2}:\d{2}$/, '').replace('Z', '');
+    const date = new Date(dateStr);
+
+    // Formata usando horário local (não UTC)
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
 
     return `${day}/${month}/${year}, ${hours}:${minutes}:${seconds}`;
   };
