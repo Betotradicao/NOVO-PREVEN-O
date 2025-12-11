@@ -152,7 +152,8 @@
       "Bash(docker:*)",
       "Bash(powershell.exe -Command \"docker --version\")",
       "Bash(powershell.exe -Command \"Get-ComputerInfo | Select-Object WindowsProductName, WindowsVersion, OsBuildNumber | Format-List\")",
-      "Bash(powershell.exe -Command \"Get-ScheduledTask -TaskName ''Prevencao-Verificacao-Automatica'' | Get-ScheduledTaskInfo\")"
+      "Bash(powershell.exe -Command \"Get-ScheduledTask -TaskName ''Prevencao-Verificacao-Automatica'' | Get-ScheduledTaskInfo\")",
+      "Bash(git mv:*)"
     ],
     "deny": [],
     "ask": []
