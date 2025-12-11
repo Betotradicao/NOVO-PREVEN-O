@@ -1,27 +1,79 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, HeadBucketCommand, CreateBucketCommand, PutBucketPolicyCommand } from '@aws-sdk/client-s3';
+import { ConfigurationService } from './configuration.service';
 
 export class MinioService {
   private s3Client: S3Client;
   private bucketName: string;
+  private endpoint: string = '';
+  private port: string = '';
+  private accessKey: string = '';
+  private secretKey: string = '';
+  private useSSL: boolean = false;
 
   constructor() {
-    // Internal connection (backend -> MinIO)
-    const endpoint = process.env.MINIO_ENDPOINT || 'localhost';
-    const port = process.env.MINIO_PORT || '9000';
-    const accessKey = process.env.MINIO_ACCESS_KEY || 'minioadmin';
-    const secretKey = process.env.MINIO_SECRET_KEY || 'minioadmin123';
-    const useSSL = process.env.MINIO_USE_SSL === 'true';
-    this.bucketName = process.env.MINIO_BUCKET_NAME || 'employee-avatars';
+    this.initializeClient();
+  }
 
-    this.s3Client = new S3Client({
-      endpoint: `${useSSL ? 'https' : 'http'}://${endpoint}:${port}`,
-      region: 'us-east-1', // MinIO doesn't care about region, but SDK requires it
-      credentials: {
-        accessKeyId: accessKey,
-        secretAccessKey: secretKey,
-      },
-      forcePathStyle: true, // Required for MinIO
-    });
+  /**
+   * Initializes or reinitializes the MinIO client with current configuration
+   * Loads from database first, falls back to .env if not found
+   */
+  private async initializeClient() {
+    try {
+      // Try to load from database first (allows dynamic updates)
+      const configs = await ConfigurationService.getAll();
+
+      // Internal connection (backend -> MinIO)
+      this.endpoint = configs.minio_endpoint || process.env.MINIO_ENDPOINT || 'localhost';
+      this.port = configs.minio_port || process.env.MINIO_PORT || '9000';
+      this.accessKey = configs.minio_access_key || process.env.MINIO_ACCESS_KEY || 'minioadmin';
+      this.secretKey = configs.minio_secret_key || process.env.MINIO_SECRET_KEY || 'minioadmin123';
+      this.useSSL = (configs.minio_use_ssl || process.env.MINIO_USE_SSL) === 'true';
+      this.bucketName = configs.minio_bucket_name || process.env.MINIO_BUCKET_NAME || 'employee-avatars';
+
+      this.s3Client = new S3Client({
+        endpoint: `${this.useSSL ? 'https' : 'http'}://${this.endpoint}:${this.port}`,
+        region: 'us-east-1', // MinIO doesn't care about region, but SDK requires it
+        credentials: {
+          accessKeyId: this.accessKey,
+          secretAccessKey: this.secretKey,
+        },
+        forcePathStyle: true, // Required for MinIO
+      });
+
+      console.log(`✅ MinIO client initialized: ${this.endpoint}:${this.port}`);
+    } catch (error) {
+      console.error('❌ Error initializing MinIO client:', error);
+      // Fall back to .env only
+      this.endpoint = process.env.MINIO_ENDPOINT || 'localhost';
+      this.port = process.env.MINIO_PORT || '9000';
+      this.accessKey = process.env.MINIO_ACCESS_KEY || 'minioadmin';
+      this.secretKey = process.env.MINIO_SECRET_KEY || 'minioadmin123';
+      this.useSSL = process.env.MINIO_USE_SSL === 'true';
+      this.bucketName = process.env.MINIO_BUCKET_NAME || 'employee-avatars';
+
+      this.s3Client = new S3Client({
+        endpoint: `${this.useSSL ? 'https' : 'http'}://${this.endpoint}:${this.port}`,
+        region: 'us-east-1',
+        credentials: {
+          accessKeyId: this.accessKey,
+          secretAccessKey: this.secretKey,
+        },
+        forcePathStyle: true,
+      });
+
+      console.log(`⚠️ MinIO client initialized from .env (fallback): ${this.endpoint}:${this.port}`);
+    }
+  }
+
+  /**
+   * Reinitializes the MinIO client with fresh configuration from database
+   * Call this after saving new MinIO configuration
+   */
+  async reinitialize(): Promise<void> {
+    console.log('🔄 Reinitializing MinIO client with updated configuration...');
+    await this.initializeClient();
+    console.log('✅ MinIO client reinitialized successfully');
   }
 
   /**
@@ -92,9 +144,10 @@ export class MinioService {
 
       // Return the URL to access the file
       // Use separate config for public URLs (browser-accessible)
-      const publicEndpoint = process.env.MINIO_PUBLIC_ENDPOINT || process.env.MINIO_ENDPOINT || 'localhost';
-      const publicPort = process.env.MINIO_PUBLIC_PORT || process.env.MINIO_PORT || '9000';
-      const publicUseSSL = process.env.MINIO_PUBLIC_USE_SSL === 'true' || process.env.MINIO_USE_SSL === 'true';
+      const configs: Record<string, any> = await ConfigurationService.getAll().catch(() => ({}));
+      const publicEndpoint = (configs.minio_public_endpoint as string) || process.env.MINIO_PUBLIC_ENDPOINT || this.endpoint;
+      const publicPort = (configs.minio_public_port as string) || process.env.MINIO_PUBLIC_PORT || this.port;
+      const publicUseSSL = ((configs.minio_public_use_ssl as string) || process.env.MINIO_PUBLIC_USE_SSL) === 'true' || this.useSSL;
 
       // Don't include port if it's standard (80 for HTTP, 443 for HTTPS) or empty
       const shouldIncludePort = publicPort && publicPort !== '80' && publicPort !== '443';

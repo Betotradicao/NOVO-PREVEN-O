@@ -96,21 +96,34 @@ export class EquipmentsService {
 
     // IDENTIFICAÇÃO POR SCANNER FÍSICO (scanner_machine_id)
     // Cada scanner físico = 1 equipamento único
+    // Busca APENAS por scanner_machine_id, pois machine_id pode mudar
     let equipment = await equipmentRepository.findOne({
       where: {
-        scanner_machine_id,
-        machine_id
+        scanner_machine_id
       }
     });
 
     if (equipment) {
       console.log(`   ✅ Equipamento ENCONTRADO - ID: ${equipment.id}, Scanner: ${scanner_machine_id}`);
 
-      // Atualizar port_number se mudou
+      // Atualizar machine_id e port_number se mudaram
+      let hasChanges = false;
+
+      if (equipment.machine_id !== machine_id) {
+        console.log(`   🔄 Machine ID mudou de "${equipment.machine_id}" para "${machine_id}"`);
+        equipment.machine_id = machine_id;
+        hasChanges = true;
+      }
+
       if (portNumber && equipment.port_number !== portNumber) {
-        console.log(`   🔄 Porta USB mudou de ${equipment.port_number} para ${portNumber}`);
+        console.log(`   🔄 Porta USB mudou de "${equipment.port_number}" para "${portNumber}"`);
         equipment.port_number = portNumber;
+        hasChanges = true;
+      }
+
+      if (hasChanges) {
         await equipmentRepository.save(equipment);
+        console.log(`   ✅ Equipamento atualizado`);
       }
     } else {
       console.log(`   ❌ Equipamento NÃO ENCONTRADO - Criando novo para scanner ${scanner_machine_id}...`);

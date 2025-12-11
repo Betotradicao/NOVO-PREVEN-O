@@ -374,6 +374,22 @@ export class ConfigController {
 
       await ConfigurationService.setMany(configsToSave);
 
+      // Se salvou configurações do MinIO, reinicializar o cliente
+      const minioConfigKeys = ['minio_endpoint', 'minio_port', 'minio_access_key', 'minio_secret_key', 'minio_use_ssl', 'minio_bucket_name'];
+      const hasMinioConfig = Object.keys(configsToSave).some(key => minioConfigKeys.includes(key));
+
+      if (hasMinioConfig) {
+        try {
+          // Importar dinamicamente para evitar dependência circular
+          const { minioService } = await import('../services/minio.service');
+          await minioService.reinitialize();
+          console.log('✅ MinIO client reinitialized after configuration update');
+        } catch (error) {
+          console.error('⚠️ Failed to reinitialize MinIO client:', error);
+          // Não falha o save, apenas loga o erro
+        }
+      }
+
       return res.json({
         success: true,
         message: 'Configurações salvas com sucesso!'
