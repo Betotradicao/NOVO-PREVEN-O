@@ -264,20 +264,22 @@ export default function Bipagens() {
   const formatDateTime = (dateString) => {
     if (!dateString) return '-';
 
-    // Remove timezone se existir e trata como horário local do Brasil
-    // Isso evita conversão de timezone pelo navegador
-    const dateStr = dateString.replace(/[+-]\d{2}:\d{2}$/, '').replace('Z', '');
-    const date = new Date(dateStr);
+    // A data vem do Zanthus como 'YYYY-MM-DD HH:MM:SS' sem timezone
+    // PostgreSQL salva como timestamp e o backend retorna em UTC
+    // Precisamos converter de volta para horário do Brasil (UTC-3)
+    const date = new Date(dateString);
 
-    // Formata usando horário local (não UTC)
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const seconds = date.getSeconds().toString().padStart(2, '0');
-
-    return `${day}/${month}/${year}, ${hours}:${minutes}:${seconds}`;
+    // Usa toLocaleString com timezone do Brasil para exibir horário correto
+    return date.toLocaleString('pt-BR', {
+      timeZone: 'America/Sao_Paulo',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
   };
 
   // Formatação de valor
