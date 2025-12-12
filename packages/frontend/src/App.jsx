@@ -17,86 +17,91 @@ import Perfil from './pages/Perfil';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <SetupCheck>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/first-setup" element={<FirstSetup />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
+    <Router>
+      <AuthProvider>
+        <Routes>
+          {/* Public Routes - First Setup MUST be accessible without auth */}
+          <Route path="/first-setup" element={<FirstSetup />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
-          {/* Protected Routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/bipagens"
-            element={
-              <ProtectedRoute>
-                <Bipagens />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/rankings"
-            element={
-              <ProtectedRoute>
-                <Rankings />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ativar-produtos"
-            element={
-              <ProtectedRoute>
-                <AtivarProdutos />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/resultados-do-dia"
-            element={
-              <ProtectedRoute>
-                <ResultadosDoDia />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/configuracoes"
-            element={
-              <ProtectedRoute>
-                <Configuracoes />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/configuracoes-rede"
-            element={
-              <ProtectedRoute>
-                <ConfiguracoesRede />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/perfil"
-            element={
-              <ProtectedRoute>
-                <Perfil />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </SetupCheck>
-      </Router>
-    </AuthProvider>
+          {/* All other routes are wrapped with SetupCheck */}
+          <Route path="/*" element={
+            <SetupCheck>
+              <Routes>
+                {/* Protected Routes */}
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/bipagens"
+                  element={
+                    <ProtectedRoute>
+                      <Bipagens />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/rankings"
+                  element={
+                    <ProtectedRoute>
+                      <Rankings />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/ativar-produtos"
+                  element={
+                    <ProtectedRoute>
+                      <AtivarProdutos />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/resultados-do-dia"
+                  element={
+                    <ProtectedRoute>
+                      <ResultadosDoDia />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/configuracoes"
+                  element={
+                    <ProtectedRoute>
+                      <Configuracoes />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/configuracoes-rede"
+                  element={
+                    <ProtectedRoute>
+                      <ConfiguracoesRede />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/perfil"
+                  element={
+                    <ProtectedRoute>
+                      <Perfil />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              </Routes>
+            </SetupCheck>
+          } />
+        </Routes>
+      </AuthProvider>
+    </Router>
   );
 }
 
