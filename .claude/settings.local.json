@@ -163,7 +163,9 @@
       "Bash(npm run typeorm:*)",
       "Bash(PGPASSWORD=admin123 psql:*)",
       "Bash(find:*)",
-      "Bash(powershell -ExecutionPolicy Bypass -File criar-tarefa-cron-automatica.ps1)"
+      "Bash(powershell -ExecutionPolicy Bypass -File criar-tarefa-cron-automatica.ps1)",
+      "Bash(schtasks /query:*)",
+      "Bash(powershell:*)"
     ],
     "deny": [],
     "ask": []

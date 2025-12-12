@@ -268,8 +268,14 @@ export class DailyVerificationCommand {
           VALUES ${values}
           ON CONFLICT (product_id, product_weight, num_cupom_fiscal)
           DO UPDATE SET
-            bip_id = COALESCE(EXCLUDED.bip_id, sells.bip_id),
-            point_of_sale_code = COALESCE(EXCLUDED.point_of_sale_code, sells.point_of_sale_code),
+            bip_id = CASE
+              WHEN EXCLUDED.bip_id IS NOT NULL THEN EXCLUDED.bip_id
+              ELSE sells.bip_id
+            END,
+            point_of_sale_code = CASE
+              WHEN EXCLUDED.point_of_sale_code IS NOT NULL THEN EXCLUDED.point_of_sale_code
+              ELSE sells.point_of_sale_code
+            END,
             status = CASE
               WHEN EXCLUDED.bip_id IS NOT NULL THEN 'verified'
               ELSE sells.status
