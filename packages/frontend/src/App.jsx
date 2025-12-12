@@ -19,87 +19,82 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <Routes>
-          {/* Public Routes - First Setup MUST be accessible without auth */}
-          <Route path="/first-setup" element={<FirstSetup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+        <SetupCheck>
+          <Routes>
+            {/* Public Routes - First Setup MUST be accessible without auth */}
+            <Route path="/first-setup" element={<FirstSetup />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
-          {/* All other routes are wrapped with SetupCheck */}
-          <Route path="/*" element={
-            <SetupCheck>
-              <Routes>
-                {/* Protected Routes */}
-                <Route
-                  path="/dashboard"
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/bipagens"
-                  element={
-                    <ProtectedRoute>
-                      <Bipagens />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/rankings"
-                  element={
-                    <ProtectedRoute>
-                      <Rankings />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/ativar-produtos"
-                  element={
-                    <ProtectedRoute>
-                      <AtivarProdutos />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/resultados-do-dia"
-                  element={
-                    <ProtectedRoute>
-                      <ResultadosDoDia />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/configuracoes"
-                  element={
-                    <ProtectedRoute>
-                      <Configuracoes />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/configuracoes-rede"
-                  element={
-                    <ProtectedRoute>
-                      <ConfiguracoesRede />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/perfil"
-                  element={
-                    <ProtectedRoute>
-                      <Perfil />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              </Routes>
-            </SetupCheck>
-          } />
-        </Routes>
+            {/* Protected Routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/bipagens"
+              element={
+                <ProtectedRoute>
+                  <Bipagens />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/rankings"
+              element={
+                <ProtectedRoute>
+                  <Rankings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/ativar-produtos"
+              element={
+                <ProtectedRoute>
+                  <AtivarProdutos />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/resultados-do-dia"
+              element={
+                <ProtectedRoute>
+                  <ResultadosDoDia />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/configuracoes"
+              element={
+                <ProtectedRoute>
+                  <Configuracoes />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/configuracoes-rede"
+              element={
+                <ProtectedRoute>
+                  <ConfiguracoesRede />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/perfil"
+              element={
+                <ProtectedRoute>
+                  <Perfil />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </SetupCheck>
       </AuthProvider>
     </Router>
   );
