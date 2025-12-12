@@ -119,11 +119,17 @@ echo.
 set BANCO_LIMPO=SIM
 pause
 
-REM ETAPA 5: Build
+REM ETAPA 5: Limpar cache do Docker
 echo.
-echo [5/7] Construindo imagens Docker...
+echo [5/8] Limpando cache do Docker...
+docker builder prune -f >nul 2>&1
+echo Cache limpo!
+
+REM ETAPA 6: Build
+echo.
+echo [6/8] Construindo imagens Docker...
 echo Isso pode levar alguns minutos...
-docker compose -f docker-compose-producao.yml build
+docker compose -f docker-compose-producao.yml build --no-cache
 if errorlevel 1 (
     echo ERRO ao construir imagens
     pause
@@ -131,9 +137,9 @@ if errorlevel 1 (
 )
 echo Build concluido!
 
-REM ETAPA 6: Iniciar
+REM ETAPA 7: Iniciar
 echo.
-echo [6/7] Iniciando containers...
+echo [7/8] Iniciando containers...
 docker compose -f docker-compose-producao.yml up -d
 if errorlevel 1 (
     echo ERRO ao iniciar containers
@@ -142,7 +148,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [7/7] Aguardando inicializacao...
+echo [8/8] Aguardando inicializacao...
 timeout /t 15 /nobreak >nul
 
 echo.
