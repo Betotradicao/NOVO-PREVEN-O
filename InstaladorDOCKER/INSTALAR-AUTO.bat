@@ -99,9 +99,47 @@ echo Elas estao salvas no arquivo .env
 echo.
 pause
 
-REM ETAPA 4: Build
+REM ETAPA 4: Parar e limpar containers antigos
 echo.
-echo [4/5] Construindo imagens Docker...
+echo [4/7] Parando containers antigos (se existirem)...
+docker compose -f docker-compose-producao.yml down >nul 2>&1
+echo Containers parados (se existiam)
+
+REM Perguntar se quer limpar volumes (dados do banco)
+echo.
+echo ========================================
+echo  ATENCAO: LIMPEZA DE DADOS
+echo ========================================
+echo.
+echo Deseja LIMPAR TODOS OS DADOS do banco?
+echo (Isso vai apagar usuarios, bipagens, vendas, etc)
+echo.
+echo Digite:
+echo   S = Sim, limpar tudo (instalacao limpa)
+echo   N = Nao, manter dados existentes
+echo.
+set /p LIMPAR_DADOS="Sua escolha (S/N): "
+
+if /i "%LIMPAR_DADOS%"=="S" (
+    echo.
+    echo Removendo volumes antigos...
+    docker compose -f docker-compose-producao.yml down -v
+    echo Volumes removidos! Banco de dados sera criado do zero.
+    echo.
+    echo IMPORTANTE: No primeiro acesso voce vai configurar:
+    echo   - Dados da empresa
+    echo   - Usuario Master inicial
+    echo   - Senhas de acesso
+    echo.
+    pause
+) else (
+    echo.
+    echo Mantendo dados existentes...
+)
+
+REM ETAPA 5: Build
+echo.
+echo [5/7] Construindo imagens Docker...
 echo Isso pode levar alguns minutos...
 docker compose -f docker-compose-producao.yml build
 if errorlevel 1 (
@@ -111,9 +149,9 @@ if errorlevel 1 (
 )
 echo Build concluido!
 
-REM ETAPA 5: Iniciar
+REM ETAPA 6: Iniciar
 echo.
-echo [5/5] Iniciando containers...
+echo [6/7] Iniciando containers...
 docker compose -f docker-compose-producao.yml up -d
 if errorlevel 1 (
     echo ERRO ao iniciar containers
@@ -122,8 +160,8 @@ if errorlevel 1 (
 )
 
 echo.
-echo Aguardando...
-timeout /t 10 /nobreak >nul
+echo [7/7] Aguardando inicializacao...
+timeout /t 15 /nobreak >nul
 
 echo.
 echo ========================================
@@ -132,4 +170,26 @@ echo ========================================
 echo.
 echo  Acesse: http://%HOST_IP%:8080
 echo.
+
+if /i "%LIMPAR_DADOS%"=="S" (
+    echo ========================================
+    echo  PRIMEIRO ACESSO
+    echo ========================================
+    echo.
+    echo Como o banco foi limpo, no primeiro acesso
+    echo voce vai configurar:
+    echo.
+    echo  1. Dados da Empresa
+    echo  2. Usuario Master (administrador)
+    echo  3. Configuracoes iniciais
+    echo.
+    echo Acesse agora: http://%HOST_IP%:8080
+    echo.
+) else (
+    echo.
+    echo Dados existentes foram mantidos.
+    echo Use suas credenciais anteriores para login.
+    echo.
+)
+
 pause
