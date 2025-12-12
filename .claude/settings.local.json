@@ -165,7 +165,8 @@
       "Bash(find:*)",
       "Bash(powershell -ExecutionPolicy Bypass -File criar-tarefa-cron-automatica.ps1)",
       "Bash(schtasks /query:*)",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "Bash(del temp_old_version.txt)"
     ],
     "deny": [],
     "ask": []
