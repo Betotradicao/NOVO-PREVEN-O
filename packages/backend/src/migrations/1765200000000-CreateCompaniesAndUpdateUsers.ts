@@ -89,21 +89,24 @@ export class CreateCompaniesAndUpdateUsers1765200000000 implements MigrationInte
       })
     );
 
-    // Criar usuário master Beto se não existir
-    const userExists = await queryRunner.query(
-      `SELECT id FROM users WHERE email = 'beto@master.com'`
-    );
-
-    if (userExists.length === 0) {
-      // Hash da senha Beto3107
-      const bcrypt = require('bcrypt');
-      const hashedPassword = await bcrypt.hash('Beto3107', 10);
-
-      await queryRunner.query(
-        `INSERT INTO users (id, email, password, role, is_master, created_at, updated_at)
-         VALUES (uuid_generate_v4(), 'beto@master.com', '${hashedPassword}', 'master', true, now(), now())`
-      );
-    }
+    // ⚠️ COMENTADO: Não criar usuário automático
+    // O usuário master deve ser criado via wizard de primeiro acesso
+    //
+    // // Criar usuário master Beto se não existir
+    // const userExists = await queryRunner.query(
+    //   `SELECT id FROM users WHERE email = 'beto@master.com'`
+    // );
+    //
+    // if (userExists.length === 0) {
+    //   // Hash da senha Beto3107
+    //   const bcrypt = require('bcrypt');
+    //   const hashedPassword = await bcrypt.hash('Beto3107', 10);
+    //
+    //   await queryRunner.query(
+    //     `INSERT INTO users (id, email, password, role, is_master, created_at, updated_at)
+    //      VALUES (uuid_generate_v4(), 'beto@master.com', '${hashedPassword}', 'master', true, now(), now())`
+    //   );
+    // }
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
