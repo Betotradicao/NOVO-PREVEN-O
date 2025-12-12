@@ -159,25 +159,18 @@ echo.
 echo  Acesse: http://%HOST_IP%:8080
 echo.
 
-if /i "%BANCO_LIMPO%"=="SIM" (
-    echo ========================================
-    echo  PRIMEIRO ACESSO
-    echo ========================================
-    echo.
-    echo Como o banco foi limpo, no primeiro acesso
-    echo voce vai configurar:
-    echo.
-    echo  1. Dados da Empresa
-    echo  2. Usuario Master (administrador)
-    echo  3. Configuracoes iniciais
-    echo.
-    echo Acesse agora: http://%HOST_IP%:8080
-    echo.
-) else (
-    echo.
-    echo Dados existentes foram mantidos.
-    echo Use suas credenciais anteriores para login.
-    echo.
-)
+echo ========================================
+echo  PRIMEIRO ACESSO
+echo ========================================
+echo.
+echo Como o banco foi limpo, no primeiro acesso
+echo voce vai configurar:
+echo.
+echo  1. Dados da Empresa
+echo  2. Usuario Master (administrador)
+echo  3. Configuracoes iniciais
+echo.
+echo Acesse agora: http://%HOST_IP%:8080
+echo.
 
 pause
