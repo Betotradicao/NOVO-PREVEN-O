@@ -54,7 +54,7 @@ services:
   backend:
     build:
       context: ../packages/backend
-      dockerfile: ../../DOCKER-TESTE-BETO/Dockerfile.backend
+      dockerfile: ../../InstaladorDOCKER/Dockerfile.backend
     container_name: prevencao-backend-prod
     restart: always
     environment:
@@ -104,7 +104,7 @@ services:
   frontend:
     build:
       context: ../packages/frontend
-      dockerfile: ../../DOCKER-TESTE-BETO/Dockerfile.frontend
+      dockerfile: ../../InstaladorDOCKER/Dockerfile.frontend
     container_name: prevencao-frontend-prod
     restart: always
     ports:
