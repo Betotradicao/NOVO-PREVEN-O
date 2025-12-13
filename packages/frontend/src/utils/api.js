@@ -40,7 +40,13 @@ function getApiBaseUrl() {
   // Se acessando por IP da rede local
   if (hostname.startsWith('10.') || hostname.startsWith('192.168.')) {
     console.log('🏠 Rede local detectada');
-    return `http://${hostname}:3001/api`;
+
+    // Detectar se está rodando em produção (porta 8080) ou dev (porta 3004)
+    const currentPort = window.location.port;
+    const backendPort = currentPort === '8080' ? '3011' : '3001'; // Produção usa 3011, Dev usa 3001
+
+    console.log(`🔌 Porta atual: ${currentPort}, usando backend na porta: ${backendPort}`);
+    return `http://${hostname}:${backendPort}/api`;
   }
 
   // Padrão: localhost
