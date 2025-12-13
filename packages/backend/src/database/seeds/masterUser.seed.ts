@@ -34,8 +34,8 @@ export async function seedMasterUser(dataSource: DataSource): Promise<void> {
       email: 'admin@prevencao.com.br',
       password: hashedPassword,
       role: UserRole.MASTER,
-      isMaster: true,
-      companyId: null // Será associado quando a empresa for criada
+      isMaster: true
+      // companyId será null por padrão (associado quando a empresa for criada)
     });
 
     await userRepository.save(masterUser);
