@@ -5,9 +5,24 @@ import { Pool } from 'pg';
 
 dotenv.config();
 
+// Construir DATABASE_URL a partir de variáveis separadas (Docker)
+function getDatabaseUrl(): string {
+  if (process.env.DATABASE_URL) {
+    return process.env.DATABASE_URL;
+  }
+
+  const host = process.env.DB_HOST || 'localhost';
+  const port = process.env.DB_PORT || '5432';
+  const user = process.env.DB_USER || 'postgres';
+  const password = process.env.DB_PASSWORD || 'postgres';
+  const database = process.env.DB_NAME || 'prevencao_db';
+
+  return `postgresql://${user}:${password}@${host}:${port}/${database}`;
+}
+
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  url: process.env.DATABASE_URL,
+  url: getDatabaseUrl(),
   // IMPORTANTE: synchronize desligado, usar migrations
   synchronize: false,
   // Rodar migrations automaticamente na inicialização (todos os ambientes)
@@ -40,7 +55,7 @@ export const AppDataSource = new DataSource({
 
 // Pool pg para queries raw (usado em autenticação e serviços)
 export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: getDatabaseUrl(),
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 3000,
