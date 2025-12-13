@@ -23,6 +23,7 @@ import systemRouter from './routes/system.routes';
 import setupRouter from './routes/setup.routes';
 import passwordRecoveryRouter from './routes/password-recovery.routes';
 import { minioService } from './services/minio.service';
+import { seedMasterUser } from './database/seeds/masterUser.seed';
 // import { checkSetupMiddleware } from './middleware/check-setup.middleware';
 
 dotenv.config();
@@ -76,6 +77,9 @@ const startServer = async () => {
   try {
     await AppDataSource.initialize();
     console.log('✅ Database connected successfully');
+
+    // Executar seed do usuário master (apenas na primeira vez)
+    await seedMasterUser(AppDataSource);
 
     // Health check automático para manter conexão viva
     // Executa a cada 20 segundos
