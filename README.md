@@ -698,30 +698,20 @@ Após instalar o sistema, ao acessar pela primeira vez, você será direcionado 
 4. Clique em **"Finalizar Configuração"**
 5. Você será redirecionado para o **Login**
 
-### ⚠️ IMPORTANTE - Migration Manual (Docker)
+### ✅ Migrations Automáticas
 
-Ao instalar via Docker pela primeira vez, você **pode precisar** executar uma migration manualmente para adicionar os campos de endereço no banco de dados.
+O sistema **executa automaticamente** todas as migrations do banco de dados ao iniciar o container Docker.
 
-**Sintomas do problema:**
-- Erro `column Company.cep does not exist` ao salvar o first-setup
-- Erro 500 no console do navegador
-
-**Solução rápida:**
-
-```bash
-# 1. Executar migration automática (tente primeiro)
-docker exec -it prevencao-backend-prod npm run migration:run:prod
-
-# 2. Se disser "No migrations are pending", execute manualmente:
-docker exec -it prevencao-postgres-prod psql -U postgres -d prevencao_db -c "ALTER TABLE companies ADD COLUMN IF NOT EXISTS cep VARCHAR(9); ALTER TABLE companies ADD COLUMN IF NOT EXISTS rua VARCHAR(255); ALTER TABLE companies ADD COLUMN IF NOT EXISTS numero VARCHAR(20); ALTER TABLE companies ADD COLUMN IF NOT EXISTS complemento VARCHAR(100); ALTER TABLE companies ADD COLUMN IF NOT EXISTS bairro VARCHAR(100); ALTER TABLE companies ADD COLUMN IF NOT EXISTS cidade VARCHAR(100); ALTER TABLE companies ADD COLUMN IF NOT EXISTS estado VARCHAR(2);"
-
-# 3. Registrar migration como executada
-docker exec -it prevencao-postgres-prod psql -U postgres -d prevencao_db -c "INSERT INTO migrations (timestamp, name) VALUES (1765580000000, 'AddAddressFieldsToCompanies1765580000000');"
+Você verá no log do backend:
+```
+🚀 Iniciando backend em modo produção...
+⏳ Aguardando PostgreSQL ficar disponível...
+✅ PostgreSQL conectado
+🔄 Executando migrations automaticamente...
+✅ Iniciando servidor...
 ```
 
-**Por que isso acontece?**
-- A migration TypeScript não é automaticamente compilada para JavaScript no build do Docker
-- Estamos trabalhando em uma solução permanente para automatizar isso
+**Não precisa fazer nada manualmente!** As migrations são aplicadas automaticamente no primeiro start.
 
 ### Após o First-Setup:
 
