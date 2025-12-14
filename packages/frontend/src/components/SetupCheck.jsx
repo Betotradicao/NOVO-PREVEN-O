@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { api } from '../utils/api';
 
 /**
@@ -8,6 +8,7 @@ import { api } from '../utils/api';
  */
 export default function SetupCheck({ children }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isChecking, setIsChecking] = useState(true);
   const [needsSetup, setNeedsSetup] = useState(false);
 
@@ -24,10 +25,12 @@ export default function SetupCheck({ children }) {
       console.log('🔍 SetupCheck: needsSetup =', needsSetup);
       setNeedsSetup(needsSetup);
 
-      // Se precisa de setup, redireciona para a página de primeiro acesso
-      if (needsSetup) {
+      // Se precisa de setup E não está já em /first-setup, redireciona
+      if (needsSetup && location.pathname !== '/first-setup') {
         console.log('🔧 SetupCheck: Sistema precisa de configuração inicial - Redirecionando para /first-setup');
         navigate('/first-setup', { replace: true });
+      } else if (needsSetup) {
+        console.log('✅ SetupCheck: Já está em /first-setup, não precisa redirecionar');
       } else {
         console.log('✅ SetupCheck: Sistema já configurado - Permitindo acesso normal');
       }
