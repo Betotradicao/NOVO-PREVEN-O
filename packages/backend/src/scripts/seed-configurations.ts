@@ -112,10 +112,12 @@ async function seedConfigurations() {
       if (configuration) {
         // Atualizar valor existente
         configuration.value = config.value;
-        configuration.description = config.description;
       } else {
         // Criar nova configuração
-        configuration = configRepository.create(config);
+        configuration = configRepository.create({
+          key: config.key,
+          value: config.value
+        });
       }
 
       await configRepository.save(configuration);
