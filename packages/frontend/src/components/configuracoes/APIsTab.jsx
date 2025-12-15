@@ -65,7 +65,7 @@ export default function APIsTab() {
   const loadConfigurations = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
-      const response = await fetch(`${apiUrl}/configurations`);
+      const response = await fetch(`${apiUrl}/config/configurations`);
       const data = await response.json();
 
       if (data.success && data.data) {
