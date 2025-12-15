@@ -2,6 +2,47 @@
 
 Instalador automatizado para servidores Linux (VPS). Detecta automaticamente o IP público, gera senhas seguras e configura todo o ambiente Docker.
 
+---
+
+## ⚡ VPS DO ZERO ABSOLUTO (Ubuntu/Debian novo)
+
+Se você acabou de criar uma VPS limpa, execute estes comandos na ordem:
+
+```bash
+# 1. Atualizar sistema
+sudo apt-get update && sudo apt-get upgrade -y
+
+# 2. Instalar Git
+sudo apt-get install git -y
+
+# 3. Instalar Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
+
+# 4. Instalar Docker Compose
+sudo apt-get install docker-compose-plugin -y
+
+# 5. Reiniciar shell (para aplicar permissões Docker)
+newgrp docker
+
+# 6. Clonar repositório
+git clone https://github.com/Betotradicao/NOVO-PREVEN-O.git
+cd NOVO-PREVEN-O/InstaladorVPS
+
+# 7. Dar permissão de execução ao instalador
+chmod +x INSTALAR-AUTO.sh
+
+# 8. Executar instalador
+sudo ./INSTALAR-AUTO.sh
+```
+
+**Pronto!** Em 5-10 minutos sua aplicação estará rodando.
+
+Acesse: `http://SEU_IP:3000/first-setup` (o IP será exibido ao final da instalação)
+
+---
+
 ## ✨ Características
 
 - ✅ **100% Automático** - Zero configuração manual
