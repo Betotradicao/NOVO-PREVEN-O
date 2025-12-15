@@ -101,6 +101,13 @@ async function seedConfigurations() {
         key: 'api_token',
         value: process.env.API_TOKEN || '',
         description: 'Token de autenticação da API para scanners'
+      },
+
+      // Tailscale
+      {
+        key: 'tailscale_vps_ip',
+        value: process.env.TAILSCALE_IP || '',
+        description: 'IP da VPS na rede Tailscale'
       }
     ];
 

@@ -82,6 +82,37 @@ echo "✅ IP detectado: $HOST_IP"
 echo ""
 
 # ============================================
+# INSTALAÇÃO DO TAILSCALE
+# ============================================
+
+echo "🔗 Instalando Tailscale (VPN segura)..."
+
+# Verificar se Tailscale já está instalado
+if ! command -v tailscale &> /dev/null; then
+    echo "📦 Instalando Tailscale..."
+    curl -fsSL https://tailscale.com/install.sh | sh
+    echo "✅ Tailscale instalado"
+else
+    echo "✅ Tailscale já instalado"
+fi
+
+# Iniciar Tailscale em modo não-interativo (não bloqueia o script)
+echo "🚀 Iniciando Tailscale..."
+tailscale up --accept-routes --shields-up=false 2>&1 | tee /tmp/tailscale-auth.log &
+TAILSCALE_PID=$!
+
+# Aguardar alguns segundos para o link de autenticação aparecer
+sleep 3
+
+# Tentar extrair o link de autenticação
+TAILSCALE_AUTH_URL=$(grep -o 'https://login.tailscale.com/a/[a-z0-9]*' /tmp/tailscale-auth.log | head -n 1)
+
+# Obter IP do Tailscale (pode estar vazio se ainda não autenticado)
+TAILSCALE_IP=$(tailscale ip -4 2>/dev/null || echo "")
+
+echo ""
+
+# ============================================
 # GERAÇÃO DE SENHAS ALEATÓRIAS
 # ============================================
 
@@ -121,6 +152,11 @@ cat > .env << EOF
 
 # IP da VPS
 HOST_IP=$HOST_IP
+
+# ============================================
+# TAILSCALE - Rede Privada Virtual
+# ============================================
+TAILSCALE_IP=$TAILSCALE_IP
 
 # ============================================
 # MINIO - Armazenamento de Arquivos
@@ -219,6 +255,31 @@ echo "      http://$HOST_IP:3001"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
+echo "🔗 TAILSCALE (Rede Privada Virtual):"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+if [ -n "$TAILSCALE_IP" ]; then
+    echo "   ✅ Status: Conectado"
+    echo "   🌐 IP da VPS na rede Tailscale: $TAILSCALE_IP"
+    echo ""
+    echo "   💡 Use este IP para acessar APIs locais dos clientes"
+else
+    echo "   ⚠️  Status: Aguardando autenticação"
+    echo ""
+    if [ -n "$TAILSCALE_AUTH_URL" ]; then
+        echo "   🔐 Para conectar, abra este link no navegador:"
+        echo "      $TAILSCALE_AUTH_URL"
+        echo ""
+        echo "   Após autenticar, execute para ver o IP:"
+        echo "      tailscale ip -4"
+    else
+        echo "   Execute o comando abaixo para obter o link de autenticação:"
+        echo "      sudo tailscale up"
+    fi
+fi
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
 echo "🔐 CREDENCIAIS GERADAS:"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
@@ -274,7 +335,8 @@ cat > CREDENCIAIS.txt << EOF
 ║           Gerado em: $(date)                    ║
 ╚════════════════════════════════════════════════════════════╝
 
-🌐 IP DA VPS: $HOST_IP
+🌐 IP PÚBLICO DA VPS: $HOST_IP
+🔗 IP TAILSCALE: ${TAILSCALE_IP:-Pendente autenticação}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -283,6 +345,12 @@ cat > CREDENCIAIS.txt << EOF
 
 🔌 BACKEND (API):
    URL: http://$HOST_IP:3001
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔗 TAILSCALE (Rede Privada Virtual):
+   IP na rede: ${TAILSCALE_IP:-Execute 'tailscale ip -4' após autenticar}
+   Link de autenticação: ${TAILSCALE_AUTH_URL:-Execute 'sudo tailscale up'}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
