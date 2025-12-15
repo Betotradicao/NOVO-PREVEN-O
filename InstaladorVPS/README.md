@@ -319,6 +319,118 @@ Se encontrar problemas:
 2. Consulte a documentação do projeto
 3. Abra uma issue no GitHub
 
+## 🔗 Tailscale - Acesso à Rede Local do Cliente
+
+O Tailscale é instalado automaticamente na VPS e permite acesso seguro às APIs locais dos clientes (Zanthus, Intersolid, etc) sem precisar abrir portas no roteador ou configurar VPN complexa.
+
+### Como Funciona
+
+```
+┌─────────────────────┐         ┌─────────────────────┐
+│   VPS (Nuvem)       │         │  Cliente (Loja)     │
+│   Tailscale ✓       │◄────────►│  Tailscale ✓        │
+│                     │ Internet│                     │
+│  Backend acessando  │         │  APIs Locais:       │
+│  APIs do cliente    │         │  - Zanthus :8010    │
+│                     │         │  - Intersolid :3003 │
+└─────────────────────┘         └─────────────────────┘
+```
+
+### 📋 Configuração no Cliente (Windows)
+
+**1. Instalar Tailscale no Windows do Cliente:**
+
+Baixe e instale: https://tailscale.com/download/windows
+
+**2. Configurar Compartilhamento de Rede:**
+
+Abra **PowerShell como Administrador** (Windows + X → PowerShell Admin) e execute:
+
+```powershell
+tailscale up --advertise-routes=10.6.1.0/24 --accept-routes
+```
+
+> ⚠️ **IMPORTANTE**: Substitua `10.6.1.0/24` pela rede local do cliente!
+>
+> Para descobrir a rede:
+> - Abra CMD e execute: `ipconfig`
+> - Procure por "Endereço IPv4" (ex: 192.168.1.100)
+> - Se for `192.168.1.X`, use: `192.168.1.0/24`
+> - Se for `10.6.1.X`, use: `10.6.1.0/24`
+
+**3. Aprovar Rota no Painel Web:**
+
+1. Acesse: https://login.tailscale.com/admin/machines
+2. Encontre a máquina do cliente
+3. Clique nos **3 pontinhos** (⋮) → **"Edit route settings"**
+4. Marque a checkbox da rede (ex: `10.6.1.0/24`)
+5. Clique em **"Approve"**
+
+**Pronto!** A VPS agora consegue acessar as APIs locais do cliente!
+
+### 🧪 Testar Conexão
+
+Na VPS, teste o acesso:
+
+```bash
+# Exemplo: acessar Intersolid
+curl http://10.6.1.102:3003
+
+# Exemplo: acessar Zanthus
+curl http://10.6.1.10:8010
+```
+
+Se retornar dados (mesmo que erro 401), significa que está funcionando! ✅
+
+### 📝 Configurar APIs no Sistema
+
+Após conectar o Tailscale:
+
+1. Acesse: `http://SEU_IP:3000`
+2. Vá em **Configurações → APIs**
+3. Configure os endpoints usando os **IPs da rede local**:
+   - **Intersolid**: `http://10.6.1.102:3003`
+   - **Zanthus**: `http://IP_LOCAL:PORTA`
+
+### 🔍 Comandos Úteis Tailscale
+
+```bash
+# Ver IP na rede Tailscale
+tailscale ip -4
+
+# Ver status da conexão
+tailscale status
+
+# Listar dispositivos conectados
+tailscale status --peers
+
+# Desconectar
+tailscale down
+
+# Reconectar
+tailscale up --accept-routes
+```
+
+### ❓ Troubleshooting
+
+**Erro: "Connection refused" ao acessar API do cliente**
+- Verifique se o Tailscale está rodando no cliente: `tailscale status`
+- Confirme se a rota foi aprovada no painel web
+- Verifique se o IP e porta da API estão corretos
+
+**Erro: "No route to host"**
+- A rede compartilhada pode estar incorreta
+- No cliente Windows, execute novamente com a rede correta:
+  ```powershell
+  tailscale up --advertise-routes=REDE_CORRETA/24 --accept-routes
+  ```
+
+**Cliente não aparece no painel**
+- Verifique se fez login com a mesma conta em ambos dispositivos
+- Restart o serviço: `tailscale down && tailscale up`
+
+---
+
 ## ⚠️ Segurança
 
 - 🔐 As senhas são geradas aleatoriamente a cada instalação
@@ -326,6 +438,7 @@ Se encontrar problemas:
 - 🔒 Considere usar HTTPS em produção (configure um proxy reverso como Nginx)
 - 🛡️ Configure firewall adequadamente
 - 🔄 Faça backups regulares dos volumes Docker
+- 🔗 Tailscale usa criptografia WireGuard ponta-a-ponta
 
 ## 📝 Licença
 
