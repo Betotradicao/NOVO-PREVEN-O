@@ -93,11 +93,11 @@ export default function APIsTab() {
             whatsappGroupId: configs.evolution_whatsapp_group_id || '120363422563235781@g.us'
           },
           database: {
-            host: configs.database_host || 'localhost',
-            port: configs.database_port || '5432',
-            username: configs.database_username || 'postgres',
-            password: configs.database_password || 'admin123',
-            databaseName: configs.database_name || 'market_security'
+            host: configs.postgres_host || 'localhost',
+            port: configs.postgres_port || '5432',
+            username: configs.postgres_user || 'postgres',
+            password: configs.postgres_password || 'admin123',
+            databaseName: configs.postgres_database || 'prevencao_db'
           },
           minio: {
             endpoint: configs.minio_endpoint || 'localhost',
@@ -188,12 +188,12 @@ export default function APIsTab() {
         evolution_instance: apiConfigs.evolution.instance,
         evolution_whatsapp_group_id: apiConfigs.evolution.whatsappGroupId,
 
-        // Database
-        database_host: apiConfigs.database.host,
-        database_port: apiConfigs.database.port,
-        database_username: apiConfigs.database.username,
-        database_password: apiConfigs.database.password,
-        database_name: apiConfigs.database.databaseName,
+        // PostgreSQL
+        postgres_host: apiConfigs.database.host,
+        postgres_port: apiConfigs.database.port,
+        postgres_user: apiConfigs.database.username,
+        postgres_password: apiConfigs.database.password,
+        postgres_database: apiConfigs.database.databaseName,
 
         // MinIO
         minio_endpoint: apiConfigs.minio.endpoint,

@@ -33,15 +33,25 @@ export default function SecurityTab() {
     }
   };
 
-  const loadDatabaseCredentials = () => {
-    // Carregar do localStorage (serão salvos na instalação)
-    const savedPostgresPassword = localStorage.getItem('postgres_password') || 'postgres123';
-    const savedMinioUser = localStorage.getItem('minio_user') || 'f0a02f9d4320abc34679f4742eecbad1';
-    const savedMinioPassword = localStorage.getItem('minio_password') || '3e928e13c609385d81df326d680074f2d69434d752c44fa3161ddf89dcdaca55';
+  const loadDatabaseCredentials = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+      const response = await fetch(`${apiUrl}/config/configurations`);
+      const data = await response.json();
 
-    setPostgresPassword(savedPostgresPassword);
-    setMinioUser(savedMinioUser);
-    setMinioPassword(savedMinioPassword);
+      if (data.success && data.data) {
+        const configs = data.data;
+        setPostgresPassword(configs.postgres_password || 'postgres123');
+        setMinioUser(configs.minio_access_key || 'admin');
+        setMinioPassword(configs.minio_secret_key || 'minioadmin123');
+      }
+    } catch (error) {
+      console.error('Erro ao carregar credenciais:', error);
+      // Fallback para valores padrão se falhar
+      setPostgresPassword('postgres123');
+      setMinioUser('admin');
+      setMinioPassword('minioadmin123');
+    }
   };
 
   const handleGenerateToken = async () => {
