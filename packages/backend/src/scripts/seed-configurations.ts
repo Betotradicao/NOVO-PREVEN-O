@@ -20,11 +20,10 @@ async function seedConfigurations() {
     const existingCount = await configRepository.count();
 
     if (existingCount > 0) {
-      console.log('✅ Configurações já existem no banco. Pulando seed.');
-      return;
+      console.log('🔄 Configurações já existem. Atualizando com valores do .env...');
+    } else {
+      console.log('📝 Banco de configurações vazio. Populando com dados do .env...');
     }
-
-    console.log('📝 Banco de configurações vazio. Populando com dados do .env...');
 
     // Pegar valores do ambiente (vindos do .env do Docker)
     const configs = [
@@ -105,9 +104,20 @@ async function seedConfigurations() {
       }
     ];
 
-    // Inserir todas as configurações
+    // Inserir ou atualizar todas as configurações (upsert)
     for (const config of configs) {
-      const configuration = configRepository.create(config);
+      // Buscar configuração existente
+      let configuration = await configRepository.findOne({ where: { key: config.key } });
+
+      if (configuration) {
+        // Atualizar valor existente
+        configuration.value = config.value;
+        configuration.description = config.description;
+      } else {
+        // Criar nova configuração
+        configuration = configRepository.create(config);
+      }
+
       await configRepository.save(configuration);
       console.log(`   ✅ ${config.key}: ${config.value ? '***' : '(vazio)'}`);
     }
