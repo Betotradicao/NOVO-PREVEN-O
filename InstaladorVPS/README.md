@@ -122,6 +122,24 @@ Após a instalação, você poderá acessar:
 
 > ⚠️ Substitua `SEU_IP` pelo IP público da sua VPS (será exibido ao final da instalação)
 
+### 🎯 Primeiro Acesso
+
+1. **Acesse**: `http://SEU_IP:3000/first-setup`
+2. **Preencha** os dados da sua empresa (CNPJ, Razão Social, etc.)
+3. **Crie** o primeiro usuário administrador
+4. **Faça login** com as credenciais criadas
+5. **Pronto!** Sistema configurado e pronto para uso
+
+### ✅ Verificando a Instalação
+
+Após o login, vá em **Configurações → APIs** para verificar:
+
+- ✅ **PostgreSQL** - Clique em "Testar Conexão" (deve ficar verde)
+- ✅ **MinIO** - Clique em "Testar Conexão" (deve ficar verde)
+- ✅ **Token de API** - Vá em "Segurança" para ver o token gerado
+
+Todas as credenciais são carregadas automaticamente do banco de dados!
+
 ## 🔐 Credenciais
 
 Todas as credenciais geradas são exibidas ao final da instalação e salvas em:
