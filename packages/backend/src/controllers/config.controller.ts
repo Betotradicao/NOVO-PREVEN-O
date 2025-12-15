@@ -6,19 +6,20 @@ export class ConfigController {
   async testDatabaseConnection(req: Request, res: Response) {
     const { host, port, username, password, databaseName } = req.body;
 
-    if (!host || !username || !password) {
+    if (!username || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Host, usuário e senha são obrigatórios'
+        message: 'Usuário e senha são obrigatórios'
       });
     }
 
+    // Usar credenciais internas do Docker para teste (backend está dentro da rede Docker)
     const client = new Client({
-      host,
-      port: parseInt(port) || 5432,
+      host: process.env.DB_HOST || 'postgres',
+      port: parseInt(process.env.DB_PORT || '5432'),
       user: username,
       password,
-      database: databaseName || 'postgres'
+      database: databaseName || process.env.DB_NAME || 'postgres'
     });
 
     try {
@@ -57,10 +58,10 @@ export class ConfigController {
   async testMinioConnection(req: Request, res: Response) {
     const { endpoint, port, accessKey, secretKey, useSSL } = req.body;
 
-    if (!endpoint || !accessKey || !secretKey) {
+    if (!accessKey || !secretKey) {
       return res.status(400).json({
         success: false,
-        message: 'Endpoint, Access Key e Secret Key são obrigatórios'
+        message: 'Access Key e Secret Key são obrigatórios'
       });
     }
 
@@ -68,10 +69,11 @@ export class ConfigController {
       // Importa o MinIO dinamicamente
       const Minio = require('minio');
 
+      // Usar credenciais internas do Docker para teste (backend está dentro da rede Docker)
       const minioClient = new Minio.Client({
-        endPoint: endpoint,
-        port: parseInt(port) || 9000,
-        useSSL: useSSL || false,
+        endPoint: process.env.MINIO_ENDPOINT || 'minio',
+        port: parseInt(process.env.MINIO_PORT || '9000'),
+        useSSL: (process.env.MINIO_USE_SSL || 'false') === 'true',
         accessKey,
         secretKey
       });
