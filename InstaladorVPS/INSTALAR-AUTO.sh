@@ -159,7 +159,7 @@ API_TOKEN=$API_TOKEN
 # ============================================
 # FRONTEND - Interface Web
 # ============================================
-VITE_API_URL=http://$HOST_IP:3001
+VITE_API_URL=http://$HOST_IP:3001/api
 
 EOF
 
