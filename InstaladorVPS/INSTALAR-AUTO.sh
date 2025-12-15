@@ -38,6 +38,33 @@ echo "✅ Docker Compose encontrado"
 echo ""
 
 # ============================================
+# ATUALIZAR CÓDIGO DO GITHUB
+# ============================================
+
+echo "🔄 Verificando atualizações do código..."
+
+# Salvar diretório atual
+INSTALLER_DIR=$(pwd)
+
+# Voltar para raiz do repositório
+cd "$(dirname "$0")/.."
+
+# Verificar se é um repositório git
+if [ -d ".git" ]; then
+    echo "📥 Atualizando código do GitHub..."
+    git fetch origin
+    git reset --hard origin/main
+    git pull origin main
+    echo "✅ Código atualizado com sucesso"
+else
+    echo "⚠️  Não é um repositório git. Pulando atualização."
+fi
+
+# Voltar para diretório do instalador
+cd "$INSTALLER_DIR"
+echo ""
+
+# ============================================
 # DETECÇÃO AUTOMÁTICA DE IP
 # ============================================
 
