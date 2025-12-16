@@ -251,6 +251,16 @@ echo ""
 
 docker compose -f docker-compose-producao.yml ps
 
+# Detectar portas do docker-compose
+FRONTEND_PORT=$(docker compose -f docker-compose-producao.yml port frontend 80 2>/dev/null | cut -d: -f2)
+BACKEND_PORT=$(docker compose -f docker-compose-producao.yml port backend 3001 2>/dev/null | cut -d: -f2)
+MINIO_PORT=$(docker compose -f docker-compose-producao.yml port minio 9000 2>/dev/null | cut -d: -f2)
+
+# Fallback para portas padrão se detecção falhar
+FRONTEND_PORT=${FRONTEND_PORT:-3000}
+BACKEND_PORT=${BACKEND_PORT:-3001}
+MINIO_PORT=${MINIO_PORT:-9010}
+
 echo ""
 echo "╔════════════════════════════════════════════════════════════════╗"
 echo "║                                                                ║"
@@ -258,16 +268,26 @@ echo "║               ✅ INSTALAÇÃO CONCLUÍDA!                         ║
 echo "║                                                                ║"
 echo "╚════════════════════════════════════════════════════════════════╝"
 echo ""
-echo "🌐 URLs de Acesso:"
+echo "🎯 PRIMEIRO ACESSO - CONFIGURAÇÃO INICIAL:"
 echo ""
-echo "   📱 Frontend:  http://${TAILSCALE_IP}:3004"
-echo "   🔧 Backend:   http://${TAILSCALE_IP}:3003"
-echo "   💾 MinIO:     http://${TAILSCALE_IP}:9000"
+echo "   👉 Abra o navegador e acesse:"
 echo ""
-echo "📝 Próximos Passos:"
+echo "      http://${TAILSCALE_IP}:${FRONTEND_PORT}/first-setup"
 echo ""
-echo "   1. Acesse o frontend e faça o primeiro cadastro"
-echo "   2. Configure email, ERP e produtos"
+echo "   💡 Faça o cadastro inicial da empresa e usuário administrador"
+echo ""
+echo "════════════════════════════════════════════════════════════════"
+echo ""
+echo "🌐 URLs do Sistema:"
+echo ""
+echo "   📱 Frontend:  http://${TAILSCALE_IP}:${FRONTEND_PORT}"
+echo "   🔧 Backend:   http://${TAILSCALE_IP}:${BACKEND_PORT}"
+echo "   💾 MinIO:     http://${TAILSCALE_IP}:${MINIO_PORT}"
+echo ""
+echo "📝 Após o Primeiro Cadastro:"
+echo ""
+echo "   1. Faça login com as credenciais criadas"
+echo "   2. Configure integrações (ERP, produtos)"
 echo "   3. Teste recuperação de senha e upload de arquivos"
 echo ""
 echo "📚 Comandos Úteis:"
