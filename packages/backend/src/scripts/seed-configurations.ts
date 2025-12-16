@@ -59,6 +59,16 @@ async function seedConfigurations() {
         description: 'Nome do bucket do MinIO'
       },
       {
+        key: 'minio_public_endpoint',
+        value: process.env.MINIO_PUBLIC_ENDPOINT || process.env.HOST_IP || 'localhost',
+        description: 'Endpoint público do MinIO para acesso externo'
+      },
+      {
+        key: 'minio_public_port',
+        value: process.env.MINIO_PUBLIC_PORT || '9010',
+        description: 'Porta pública do MinIO para acesso externo'
+      },
+      {
         key: 'minio_console_port',
         value: '9011',
         description: 'Porta do console web do MinIO'
