@@ -125,23 +125,22 @@ fi
 echo ""
 
 # ============================================
-# IP TAILSCALE DO CLIENTE
+# IP TAILSCALE DO CLIENTE (OPCIONAL)
 # ============================================
 
-echo "🔗 IP Tailscale do Cliente"
+echo "🔗 IP Tailscale (Opcional)"
 echo ""
 echo "Se o cliente tem Tailscale instalado na máquina do ERP,"
-echo "informe o IP Tailscale para acesso direto."
+echo "você pode informar o IP Tailscale como acesso alternativo."
 echo ""
 echo "Exemplo: 100.69.131.40"
 echo ""
-read -p "IP Tailscale (ou Enter para usar IP da VPS): " TAILSCALE_IP </dev/tty
+read -p "IP Tailscale (deixe vazio se não usar): " TAILSCALE_IP </dev/tty
 
 if [ -z "$TAILSCALE_IP" ]; then
-  TAILSCALE_IP="$VPS_IP"
-  echo "→ Usando IP da VPS: $VPS_IP"
+  echo "→ Sem Tailscale configurado"
 else
-  echo "→ Usando Tailscale: $TAILSCALE_IP"
+  echo "→ Tailscale configurado: $TAILSCALE_IP"
 fi
 
 echo ""
@@ -157,8 +156,8 @@ cd "$PROJECT_DIR/InstaladorVPS"
 cat > .env << EOF
 # URLs e Hosts
 NODE_ENV=production
-FRONTEND_URL=http://${TAILSCALE_IP}:3004
-BACKEND_URL=http://${TAILSCALE_IP}:3003
+FRONTEND_URL=http://${VPS_IP}:3004
+BACKEND_URL=http://${VPS_IP}:3003
 
 # Banco de Dados PostgreSQL
 DB_HOST=postgres
@@ -181,7 +180,7 @@ MINIO_BUCKET_NAME=employee-avatars
 MINIO_USE_SSL=false
 
 # MinIO - URLs públicas (navegador -> MinIO)
-MINIO_PUBLIC_ENDPOINT=${TAILSCALE_IP}
+MINIO_PUBLIC_ENDPOINT=${VPS_IP}
 MINIO_PUBLIC_PORT=9000
 MINIO_PUBLIC_USE_SSL=false
 
@@ -204,8 +203,8 @@ JWT_SECRET=$(openssl rand -base64 32)
 
 # Configurações extras
 LOG_LEVEL=info
-HOST_IP=${TAILSCALE_IP}
-VITE_API_URL=http://${TAILSCALE_IP}:3003
+HOST_IP=${VPS_IP}
+VITE_API_URL=http://${VPS_IP}:3003
 DB_USER=postgres
 API_TOKEN=$(openssl rand -base64 32)
 EOF
@@ -268,7 +267,7 @@ echo "🎯 PRIMEIRO ACESSO - CONFIGURAÇÃO INICIAL:"
 echo ""
 echo "   👉 Abra o navegador e acesse:"
 echo ""
-echo "      http://${TAILSCALE_IP}:${FRONTEND_PORT}/first-setup"
+echo "      http://${VPS_IP}:${FRONTEND_PORT}/first-setup"
 echo ""
 echo "   💡 Faça o cadastro inicial da empresa e usuário administrador"
 echo ""
@@ -276,10 +275,15 @@ echo "════════════════════════�
 echo ""
 echo "🌐 URLs do Sistema:"
 echo ""
-echo "   📱 Frontend:  http://${TAILSCALE_IP}:${FRONTEND_PORT}"
-echo "   🔧 Backend:   http://${TAILSCALE_IP}:${BACKEND_PORT}"
-echo "   💾 MinIO:     http://${TAILSCALE_IP}:${MINIO_PORT}"
+echo "   📱 Frontend:  http://${VPS_IP}:${FRONTEND_PORT}"
+echo "   🔧 Backend:   http://${VPS_IP}:${BACKEND_PORT}"
+echo "   💾 MinIO:     http://${VPS_IP}:${MINIO_PORT}"
 echo ""
+if [ ! -z "$TAILSCALE_IP" ] && [ "$TAILSCALE_IP" != "$VPS_IP" ]; then
+  echo "   🔗 Acesso alternativo via Tailscale:"
+  echo "      http://${TAILSCALE_IP}:${FRONTEND_PORT}"
+  echo ""
+fi
 echo "📝 Após o Primeiro Cadastro:"
 echo ""
 echo "   1. Faça login com as credenciais criadas"
