@@ -116,8 +116,13 @@ async function seedConfigurations() {
       // Tailscale
       {
         key: 'tailscale_vps_ip',
-        value: process.env.TAILSCALE_IP || '',
+        value: process.env.TAILSCALE_VPS_IP || process.env.TAILSCALE_IP || '',
         description: 'IP da VPS na rede Tailscale'
+      },
+      {
+        key: 'tailscale_client_ip',
+        value: process.env.TAILSCALE_CLIENT_IP || '',
+        description: 'IP Tailscale da máquina do cliente (onde roda o ERP)'
       }
     ];
 

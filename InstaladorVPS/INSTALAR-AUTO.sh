@@ -113,6 +113,27 @@ TAILSCALE_IP=$(tailscale ip -4 2>/dev/null || echo "")
 echo ""
 
 # ============================================
+# IP TAILSCALE DO CLIENTE (WINDOWS/ERP)
+# ============================================
+
+echo "🏪 Configuração do Cliente (Loja)"
+echo ""
+echo "Se o cliente possui Tailscale instalado na máquina onde roda o ERP,"
+echo "informe o IP Tailscale para conectar automaticamente."
+echo ""
+echo "Exemplo: 100.69.131.40"
+echo ""
+read -p "IP Tailscale da máquina do cliente (deixe vazio se não usar): " TAILSCALE_CLIENT_IP
+
+if [ -n "$TAILSCALE_CLIENT_IP" ]; then
+    echo "✅ IP Tailscale do cliente configurado: $TAILSCALE_CLIENT_IP"
+else
+    echo "⚠️  Sem IP Tailscale do cliente. Conexão com ERP será local/manual."
+fi
+
+echo ""
+
+# ============================================
 # GERAÇÃO DE SENHAS ALEATÓRIAS
 # ============================================
 
@@ -156,7 +177,8 @@ HOST_IP=$HOST_IP
 # ============================================
 # TAILSCALE - Rede Privada Virtual
 # ============================================
-TAILSCALE_IP=$TAILSCALE_IP
+TAILSCALE_VPS_IP=$TAILSCALE_IP
+TAILSCALE_CLIENT_IP=$TAILSCALE_CLIENT_IP
 
 # ============================================
 # MINIO - Armazenamento de Arquivos
