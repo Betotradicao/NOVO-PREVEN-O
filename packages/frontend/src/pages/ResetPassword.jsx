@@ -29,7 +29,7 @@ export default function ResetPassword() {
     }
 
     try {
-      await api.get(`/password-recovery/validate/${token}`);
+      await api.get(`/password-recovery/validate?token=${token}`);
       setTokenValid(true);
     } catch (err) {
       setError(err.response?.data?.error || 'Token inválido ou expirado');
