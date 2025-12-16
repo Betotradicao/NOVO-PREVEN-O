@@ -7,6 +7,7 @@ import ModulosTab from '../components/configuracoes/ModulosTab';
 import EmpresaTab from '../components/configuracoes/EmpresaTab';
 import APIsTab from '../components/configuracoes/APIsTab';
 import SecurityTab from '../components/configuracoes/SecurityTab';
+import EmailTab from '../components/configuracoes/EmailTab';
 import api from '../services/api';
 
 export default function ConfiguracoesRede() {
@@ -28,7 +29,7 @@ export default function ConfiguracoesRede() {
 
   useEffect(() => {
     const tabFromUrl = searchParams.get('tab');
-    if (tabFromUrl && (tabFromUrl === 'modulos' || tabFromUrl === 'empresa' || tabFromUrl === 'apis' || tabFromUrl === 'security')) {
+    if (tabFromUrl && (tabFromUrl === 'modulos' || tabFromUrl === 'empresa' || tabFromUrl === 'apis' || tabFromUrl === 'security' || tabFromUrl === 'email')) {
       setActiveTab(tabFromUrl);
     }
   }, [searchParams]);
@@ -217,6 +218,7 @@ export default function ConfiguracoesRede() {
               {activeTab === 'empresa' && <EmpresaTab />}
               {activeTab === 'apis' && <APIsTab />}
               {activeTab === 'security' && <SecurityTab />}
+              {activeTab === 'email' && <EmailTab />}
             </div>
           </div>
         </div>
