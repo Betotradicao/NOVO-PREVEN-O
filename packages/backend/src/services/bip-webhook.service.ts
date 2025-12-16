@@ -24,7 +24,7 @@ export class BipWebhookService {
         // Retorna produto mock para permitir simulação sem ERP configurado
         return {
           descricao: `Produto Teste PLU ${plu}`,
-          valvenda: 10.99,
+          valvenda: '10.99',
           valoferta: null
         };
       }
@@ -42,7 +42,7 @@ export class BipWebhookService {
       // Fallback para produto mock em caso de erro de conexão com ERP
       return {
         descricao: `Produto Teste PLU ${plu}`,
-        valvenda: 10.99,
+        valvenda: '10.99',
         valoferta: null
       };
     }
