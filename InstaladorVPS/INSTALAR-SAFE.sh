@@ -89,16 +89,26 @@ echo "✅ Repositório clonado"
 echo ""
 
 # ============================================
-# COLETAR INFORMAÇÕES
+# DETECTAR IP DA VPS AUTOMATICAMENTE
 # ============================================
 
 echo "📋 Configuração do Sistema"
 echo ""
 
-# IP da VPS
-echo "Digite o IP público desta VPS:"
-echo "Exemplo: 46.202.150.64"
-read -p "IP da VPS: " VPS_IP </dev/tty
+# Detectar IP público da VPS automaticamente
+echo "🔍 Detectando IP público da VPS..."
+VPS_IP=$(curl -s ifconfig.me || curl -s icanhazip.com || curl -s ipinfo.io/ip)
+
+if [ -z "$VPS_IP" ]; then
+  echo "⚠️  Não foi possível detectar o IP automaticamente"
+  read -p "Digite o IP público desta VPS: " VPS_IP </dev/tty
+else
+  echo "✅ IP detectado: $VPS_IP"
+  read -p "Confirma este IP? (Enter para sim, ou digite outro IP): " IP_CUSTOM </dev/tty
+  if [ ! -z "$IP_CUSTOM" ]; then
+    VPS_IP="$IP_CUSTOM"
+  fi
+fi
 echo ""
 
 # IP Tailscale do cliente
