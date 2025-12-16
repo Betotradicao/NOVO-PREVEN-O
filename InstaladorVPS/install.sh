@@ -253,15 +253,10 @@ echo ""
 
 docker compose -f docker-compose-producao.yml ps
 
-# Detectar portas do docker-compose
-FRONTEND_PORT=$(docker compose -f docker-compose-producao.yml port frontend 80 2>/dev/null | cut -d: -f2)
-BACKEND_PORT=$(docker compose -f docker-compose-producao.yml port backend 3001 2>/dev/null | cut -d: -f2)
-MINIO_PORT=$(docker compose -f docker-compose-producao.yml port minio 9000 2>/dev/null | cut -d: -f2)
-
-# Fallback para portas padrão se detecção falhar
-FRONTEND_PORT=${FRONTEND_PORT:-3000}
-BACKEND_PORT=${BACKEND_PORT:-3001}
-MINIO_PORT=${MINIO_PORT:-9010}
+# Usar portas fixas (definidas no docker-compose-producao.yml)
+FRONTEND_PORT=3004
+BACKEND_PORT=3003
+MINIO_PORT=9000
 
 echo ""
 echo "╔════════════════════════════════════════════════════════════════╗"
