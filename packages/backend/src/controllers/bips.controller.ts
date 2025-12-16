@@ -440,7 +440,11 @@ export class BipsController {
       const bipId = parseInt(req.params.id);
       const file = req.file;
 
+      console.log(`🎥 [BIP ${bipId}] Requisição de upload de vídeo recebida`);
+      console.log(`🎥 [BIP ${bipId}] Arquivo: ${file ? `${file.originalname} (${(file.size / 1024 / 1024).toFixed(2)} MB, ${file.mimetype})` : 'NENHUM'}`);
+
       if (!file) {
+        console.error(`❌ [BIP ${bipId}] Nenhum arquivo foi enviado`);
         return res.status(400).json({ error: 'Nenhum arquivo enviado' });
       }
 
@@ -448,20 +452,33 @@ export class BipsController {
       const bip = await bipRepository.findOne({ where: { id: bipId } });
 
       if (!bip) {
+        console.error(`❌ [BIP ${bipId}] Bipagem não encontrada no banco de dados`);
         return res.status(404).json({ error: 'Bipagem não encontrada' });
       }
 
+      console.log(`✅ [BIP ${bipId}] Bipagem encontrada, iniciando processo de upload`);
+
       // Se já existe um vídeo, deletar o antigo do MinIO
       if (bip.video_url) {
-        await uploadService.deleteFile(bip.video_url);
+        console.log(`🗑️ [BIP ${bipId}] Deletando vídeo antigo: ${bip.video_url}`);
+        try {
+          await uploadService.deleteFile(bip.video_url);
+          console.log(`✅ [BIP ${bipId}] Vídeo antigo deletado com sucesso`);
+        } catch (deleteError) {
+          console.error(`⚠️ [BIP ${bipId}] Erro ao deletar vídeo antigo (continuando):`, deleteError);
+        }
       }
 
       // Upload do novo vídeo para o MinIO
+      console.log(`☁️ [BIP ${bipId}] Enviando vídeo para MinIO...`);
       const videoUrl = await uploadService.uploadVideo(file, bipId);
+      console.log(`✅ [BIP ${bipId}] Vídeo enviado para MinIO com sucesso`);
+      console.log(`🔗 [BIP ${bipId}] URL gerada: ${videoUrl}`);
 
       // Atualizar com novo vídeo (URL completa do MinIO)
       bip.video_url = videoUrl;
       await bipRepository.save(bip);
+      console.log(`💾 [BIP ${bipId}] URL salva no banco de dados`);
 
       res.json({
         success: true,
@@ -469,8 +486,12 @@ export class BipsController {
         message: 'Vídeo enviado com sucesso'
       });
     } catch (error) {
-      console.error('Erro ao fazer upload de vídeo:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
+      console.error(`❌ [BIP ${req.params.id}] Erro ao fazer upload de vídeo:`, error);
+      console.error(`❌ [BIP ${req.params.id}] Stack trace:`, error instanceof Error ? error.stack : 'N/A');
+      res.status(500).json({
+        error: 'Erro interno do servidor',
+        details: error instanceof Error ? error.message : 'Erro desconhecido'
+      });
     }
   }
 
@@ -515,7 +536,11 @@ export class BipsController {
       const bipId = parseInt(req.params.id);
       const file = req.file;
 
+      console.log(`📸 [BIP ${bipId}] Requisição de upload de imagem recebida`);
+      console.log(`📸 [BIP ${bipId}] Arquivo: ${file ? `${file.originalname} (${(file.size / 1024).toFixed(2)} KB, ${file.mimetype})` : 'NENHUM'}`);
+
       if (!file) {
+        console.error(`❌ [BIP ${bipId}] Nenhum arquivo foi enviado`);
         return res.status(400).json({ error: 'Nenhum arquivo enviado' });
       }
 
@@ -523,20 +548,33 @@ export class BipsController {
       const bip = await bipRepository.findOne({ where: { id: bipId } });
 
       if (!bip) {
+        console.error(`❌ [BIP ${bipId}] Bipagem não encontrada no banco de dados`);
         return res.status(404).json({ error: 'Bipagem não encontrada' });
       }
 
+      console.log(`✅ [BIP ${bipId}] Bipagem encontrada, iniciando processo de upload`);
+
       // Se já existe uma imagem, deletar a antiga do MinIO
       if (bip.image_url) {
-        await uploadService.deleteFile(bip.image_url);
+        console.log(`🗑️ [BIP ${bipId}] Deletando imagem antiga: ${bip.image_url}`);
+        try {
+          await uploadService.deleteFile(bip.image_url);
+          console.log(`✅ [BIP ${bipId}] Imagem antiga deletada com sucesso`);
+        } catch (deleteError) {
+          console.error(`⚠️ [BIP ${bipId}] Erro ao deletar imagem antiga (continuando):`, deleteError);
+        }
       }
 
       // Upload da nova imagem para o MinIO
+      console.log(`☁️ [BIP ${bipId}] Enviando imagem para MinIO...`);
       const imageUrl = await uploadService.uploadImage(file, bipId);
+      console.log(`✅ [BIP ${bipId}] Imagem enviada para MinIO com sucesso`);
+      console.log(`🔗 [BIP ${bipId}] URL gerada: ${imageUrl}`);
 
       // Atualizar com nova imagem (URL completa do MinIO)
       bip.image_url = imageUrl;
       await bipRepository.save(bip);
+      console.log(`💾 [BIP ${bipId}] URL salva no banco de dados`);
 
       res.json({
         success: true,
@@ -544,8 +582,12 @@ export class BipsController {
         message: 'Imagem enviada com sucesso'
       });
     } catch (error) {
-      console.error('Erro ao fazer upload de imagem:', error);
-      res.status(500).json({ error: 'Erro interno do servidor' });
+      console.error(`❌ [BIP ${req.params.id}] Erro ao fazer upload de imagem:`, error);
+      console.error(`❌ [BIP ${req.params.id}] Stack trace:`, error instanceof Error ? error.stack : 'N/A');
+      res.status(500).json({
+        error: 'Erro interno do servidor',
+        details: error instanceof Error ? error.message : 'Erro desconhecido'
+      });
     }
   }
 
