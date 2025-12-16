@@ -45,20 +45,10 @@ echo ""
 # CLONAR/ATUALIZAR CÓDIGO
 # ============================================
 
-if [ ! -d "$PROJECT_DIR" ]; then
-  echo "📥 Clonando repositório do GitHub..."
-  cd "$HOME"
-  git clone https://github.com/Betotradicao/NOVO-PREVEN-O.git roberto-prevencao-no-radar-main
-  echo "✅ Repositório clonado"
-else
-  echo "📥 Atualizando código do GitHub..."
-  cd "$PROJECT_DIR"
-  git fetch origin
-  git reset --hard origin/main
-  git pull origin main
-  echo "✅ Código atualizado"
-fi
-
+echo "📥 Clonando repositório do GitHub..."
+cd "$HOME"
+git clone https://github.com/Betotradicao/NOVO-PREVEN-O.git roberto-prevencao-no-radar-main
+echo "✅ Repositório clonado"
 echo ""
 
 # ============================================
