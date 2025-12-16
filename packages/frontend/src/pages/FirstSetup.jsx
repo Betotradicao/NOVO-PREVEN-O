@@ -41,8 +41,8 @@ export default function FirstSetup() {
     confirmPassword: '',
 
     // Configuração de Email de Envio
-    emailUser: '',
-    emailPass: '',
+    emailUser: 'betotradicao76@gmail.com',
+    emailPass: 'ylljjijqstxnwogk',
   });
 
   // Formatar CEP enquanto digita
