@@ -113,11 +113,18 @@ echo "📋 Configuração do Sistema"
 echo ""
 
 echo "🔍 Detectando IP público da VPS..."
-VPS_IP=$(curl -4 -s ifconfig.me || curl -4 -s icanhazip.com || curl -4 -s ipinfo.io/ip)
+# Tenta detectar IP e valida se é IPv4 (formato: xxx.xxx.xxx.xxx)
+VPS_IP=$(curl -4 -s ifconfig.me 2>/dev/null | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$')
+if [ -z "$VPS_IP" ]; then
+  VPS_IP=$(curl -4 -s icanhazip.com 2>/dev/null | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$')
+fi
+if [ -z "$VPS_IP" ]; then
+  VPS_IP=$(curl -4 -s ipinfo.io/ip 2>/dev/null | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$')
+fi
 
 if [ -z "$VPS_IP" ]; then
   echo "⚠️  Não foi possível detectar automaticamente"
-  read -p "Digite o IP público desta VPS: " VPS_IP </dev/tty
+  read -p "Digite o IP público desta VPS (formato: xxx.xxx.xxx.xxx): " VPS_IP </dev/tty
 else
   echo "✅ IP da VPS detectado: $VPS_IP"
 fi
