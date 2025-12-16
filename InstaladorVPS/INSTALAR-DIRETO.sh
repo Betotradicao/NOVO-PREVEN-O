@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 echo "╔════════════════════════════════════════════════════════════════╗"
 echo "║                                                                ║"
@@ -17,7 +16,7 @@ PROJECT_DIR="$HOME/roberto-prevencao-no-radar-main"
 
 echo "⚠️  ATENÇÃO: Este script vai reinstalar o sistema do ZERO."
 echo ""
-read -p "Deseja EXCLUIR tudo e reinstalar? (SIM/não): " CONFIRMA_LIMPEZA
+read -p "Deseja EXCLUIR tudo e reinstalar? (SIM/não): " CONFIRMA_LIMPEZA </dev/tty
 echo ""
 
 if [ "$CONFIRMA_LIMPEZA" != "SIM" ]; then
@@ -75,7 +74,7 @@ echo "informe o IP Tailscale para conectar automaticamente."
 echo ""
 echo "Exemplo: 100.69.131.40"
 echo ""
-read -p "IP Tailscale da máquina do cliente (deixe vazio se não usar): " TAILSCALE_CLIENT_IP
+read -p "IP Tailscale da máquina do cliente (deixe vazio se não usar): " TAILSCALE_CLIENT_IP </dev/tty
 echo ""
 
 # ============================================
