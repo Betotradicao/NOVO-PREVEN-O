@@ -6,9 +6,37 @@ Sistema completo de monitoramento e prevenção de furtos desenvolvido para merc
 
 ## 🚀 Instalação Rápida
 
-Escolha o método de instalação de acordo com sua necessidade:
+### 🐧 Instalação em VPS/Servidor Linux (RECOMENDADO)
 
-### 📁 Opção 1: Instalação via Docker (Recomendado para Produção)
+**Instalador Oficial - Funciona em qualquer situação**
+
+Execute este comando único como root:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Betotradicao/NOVO-PREVEN-O/main/InstaladorVPS/install.sh | bash
+```
+
+**O que o instalador faz:**
+- ✅ Detecta IP da VPS automaticamente
+- ✅ Pergunta se existe instalação anterior (atualiza ou reinstala)
+- ✅ Solicita IP Tailscale do cliente (opcional)
+- ✅ Instala Docker (se necessário)
+- ✅ Configura PostgreSQL, MinIO, Backend e Frontend
+- ✅ Inicia todos os containers automaticamente
+
+**Acesso após instalação:**
+- Frontend: `http://[IP]:3004`
+- Backend: `http://[IP]:3003`
+- MinIO: `http://[IP]:9000`
+
+📖 **Documentação VPS**: [InstaladorVPS/README.md](InstaladorVPS/README.md)
+
+---
+
+### 💻 Instalação Local (Windows - Desenvolvimento)
+
+<details>
+<summary>📁 Opção 1: Instalação via Docker</summary>
 
 **Ideal para**: Instalações rápidas, ambientes isolados, produção
 
@@ -20,9 +48,10 @@ cd InstaladorDOCKER
 
 📖 **Documentação completa**: [InstaladorDOCKER/README.md](InstaladorDOCKER/README.md)
 
----
+</details>
 
-### 🏠 Opção 2: Instalação Interna (Desenvolvimento/Rede Local)
+<details>
+<summary>🏠 Opção 2: Instalação Interna (Desenvolvimento/Rede Local)</summary>
 
 **Ideal para**: Desenvolvimento, rede interna, máquinas 24/7
 
@@ -39,6 +68,8 @@ cd InstaladorINTERNO
 - ✅ Ngrok (acesso externo - opcional)
 
 📖 **Documentação completa**: [InstaladorINTERNO/README.md](InstaladorINTERNO/README.md)
+
+</details>
 
 ---
 

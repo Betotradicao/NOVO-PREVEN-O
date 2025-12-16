@@ -180,7 +180,9 @@
       "Bash(curl -fsSL https://raw.githubusercontent.com/Betotradicao/NOVO-PREVEN-O/main/InstaladorVPS/INSTALAR-DIRETO.sh)",
       "Bash(curl -H \"Cache-Control: no-cache\" -fsSL https://raw.githubusercontent.com/Betotradicao/NOVO-PREVEN-O/b147371/InstaladorVPS/INSTALAR-DIRETO.sh)",
       "Bash(ssh root@46.202.150.64 \"docker logs prevencao-backend-prod --tail 100\")",
-      "Bash(ssh root@46.202.150.64 \"docker ps -a | grep minio\")"
+      "Bash(ssh root@46.202.150.64 \"docker ps -a | grep minio\")",
+      "Bash(npm run build:backend:*)",
+      "Bash(ssh root@31.97.82.235 \"cd /root/prevencao-no-radar/InstaladorVPS && docker logs prevencao-postgres-prod --tail 50\")"
     ],
     "deny": [],
     "ask": []
