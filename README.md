@@ -855,6 +855,50 @@ node test-email.js
 
 ---
 
+## ⏰ Timezone e Correções de Data
+
+O sistema corrige automaticamente o timezone das vendas recebidas do ERP Zanthus:
+
+- **Problema**: Vendas vinham em UTC (3 horas atrasadas em relação ao BRT)
+- **Solução Implementada**:
+  - Função `adjustTimezone()` adiciona +3 horas para converter UTC → BRT
+  - Query SQL com `+ INTERVAL '3' HOUR` para vendas do Zanthus
+  - Backend retorna datas como string formatada (evita conversão do navegador)
+- **Resultado**: Vendas exibem horário correto no sistema (timezone brasileiro)
+
+**Arquivo modificado**: `packages/backend/src/services/sales.service.ts`
+**Commit**: `69f63f4` - fix: Corrige timezone das vendas (+3h BRT)
+
+---
+
+## 🌐 Traefik e Labels para Domínios (VPS)
+
+O `docker-compose-producao.yml` inclui labels Traefik prontas para uso com reverse proxy:
+
+**Frontend** (`prevencao-frontend-prod`):
+```yaml
+labels:
+  - "traefik.enable=true"
+  - "traefik.http.routers.prevencao-frontend.rule=Host(`prevencaonoradar.com.br`) || Host(`www.prevencaonoradar.com.br`)"
+  - "traefik.http.routers.prevencao-frontend.entrypoints=websecure"
+  - "traefik.http.routers.prevencao-frontend.tls.certresolver=letsencryptresolver"
+  - "traefik.http.services.prevencao-frontend.loadbalancer.server.port=80"
+```
+
+**Backend** (`prevencao-backend-prod`):
+```yaml
+labels:
+  - "traefik.enable=true"
+  - "traefik.http.routers.prevencao-backend.rule=Host(`prevencaonoradar.com.br`) && PathPrefix(`/api`)"
+  - "traefik.http.routers.prevencao-backend.entrypoints=websecure"
+  - "traefik.http.routers.prevencao-backend.tls.certresolver=letsencryptresolver"
+  - "traefik.http.services.prevencao-backend.loadbalancer.server.port=3001"
+```
+
+**Nota**: Para usar com Traefik em VPS, é necessário migrar para Docker Swarm ou configurar Traefik para detectar containers standalone.
+
+---
+
 ## 🔒 Segurança
 
 - Autenticação JWT
