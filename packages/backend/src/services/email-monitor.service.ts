@@ -1,4 +1,4 @@
-import * as Imap from 'node-imap';
+import Imap from 'node-imap';
 import { simpleParser, ParsedMail, Attachment } from 'mailparser';
 import { ConfigurationService } from './configuration.service';
 import { AppDataSource } from '../config/database';
