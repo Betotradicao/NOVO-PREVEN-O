@@ -5,6 +5,7 @@ import { AppDataSource } from '../config/database';
 import { EmailMonitorLog } from '../entities/EmailMonitorLog';
 import * as fs from 'fs';
 import * as path from 'path';
+import axios from 'axios';
 
 export interface EmailMonitorConfig {
   email: string;
@@ -430,5 +431,42 @@ export class EmailMonitorService {
       },
       take: limit
     });
+  }
+
+  /**
+   * Busca grupos do WhatsApp via Evolution API
+   */
+  static async getWhatsAppGroups(): Promise<Array<{ id: string; name: string }>> {
+    try {
+      // Buscar configurações da Evolution API
+      const evolutionApiUrl = await ConfigurationService.get('evolution_api_url', '');
+      const evolutionApiToken = await ConfigurationService.get('evolution_api_token', '');
+      const evolutionInstance = await ConfigurationService.get('evolution_instance', '');
+
+      if (!evolutionApiUrl || !evolutionApiToken || !evolutionInstance) {
+        throw new Error('Evolution API não configurada');
+      }
+
+      // Fazer requisição para buscar grupos
+      const response = await axios.get(
+        `${evolutionApiUrl}/group/fetchAllGroups/${evolutionInstance}`,
+        {
+          headers: {
+            'apikey': evolutionApiToken
+          }
+        }
+      );
+
+      // Mapear resposta para formato esperado
+      const groups = response.data.map((group: any) => ({
+        id: group.id,
+        name: group.subject || group.name || 'Sem nome'
+      }));
+
+      return groups;
+    } catch (error) {
+      console.error('Erro ao buscar grupos do WhatsApp:', error);
+      throw error;
+    }
   }
 }

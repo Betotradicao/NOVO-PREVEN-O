@@ -46,16 +46,12 @@ export default function EmailMonitorTab() {
   const fetchGroups = async () => {
     try {
       // Buscar grupos do WhatsApp via Evolution API
-      const response = await api.get('/config');
-      const whatsappGroupId = response.data.prevencao_whatsapp_group_id || '';
-
-      // Por enquanto, apenas mostrar o grupo configurado
-      // Em produção, você pode buscar a lista de grupos da Evolution API
-      if (whatsappGroupId) {
-        setGroups([{ id: whatsappGroupId, name: 'Grupo Prevenção' }]);
-      }
+      const response = await api.get('/email-monitor/whatsapp-groups');
+      const fetchedGroups = response.data.groups || [];
+      setGroups(fetchedGroups);
     } catch (error) {
       console.error('Erro ao buscar grupos:', error);
+      showMessage('error', 'Erro ao carregar grupos do WhatsApp. Verifique se a Evolution API está configurada.');
     }
   };
 

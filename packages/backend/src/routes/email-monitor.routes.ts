@@ -11,5 +11,6 @@ router.put('/config', authenticateToken, emailMonitorController.updateConfig.bin
 router.post('/test', authenticateToken, emailMonitorController.testConnection.bind(emailMonitorController));
 router.post('/check', authenticateToken, emailMonitorController.checkEmails.bind(emailMonitorController));
 router.get('/logs', authenticateToken, emailMonitorController.getLogs.bind(emailMonitorController));
+router.get('/whatsapp-groups', authenticateToken, emailMonitorController.getWhatsAppGroups.bind(emailMonitorController));
 
 export default router;

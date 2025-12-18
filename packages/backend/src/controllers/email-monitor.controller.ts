@@ -131,4 +131,21 @@ export class EmailMonitorController {
       return res.status(500).json({ error: 'Failed to fetch email monitor logs' });
     }
   }
+
+  /**
+   * GET /api/email-monitor/whatsapp-groups
+   * Buscar grupos do WhatsApp via Evolution API
+   */
+  async getWhatsAppGroups(req: Request, res: Response) {
+    try {
+      const groups = await EmailMonitorService.getWhatsAppGroups();
+      return res.json({ groups });
+    } catch (error) {
+      console.error('Error fetching WhatsApp groups:', error);
+      return res.status(500).json({
+        error: 'Failed to fetch WhatsApp groups',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  }
 }
