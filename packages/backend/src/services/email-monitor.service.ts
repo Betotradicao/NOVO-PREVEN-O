@@ -288,8 +288,13 @@ export class EmailMonitorService {
    * Formata o texto do email com emojis para WhatsApp
    */
   private static formatEmailText(text: string): string {
-    // Adicionar emojis ao texto baseado em palavras-chave
+    // Limpar espaços extras e normalizar quebras de linha
     let formattedText = text
+      .trim()
+      // Normalizar múltiplas quebras de linha
+      .replace(/\n{3,}/g, '\n\n')
+      // Remover espaços no início de cada linha
+      .replace(/^\s+/gm, '')
       // Evento de alarme
       .replace(/Evento de alarme:/gi, '🚨 Evento de alarme:')
       // Reconhecimento Facial
@@ -314,8 +319,8 @@ export class EmailMonitorService {
       .replace(/Modo Comum/gi, '⚙️ Modo Comum')
       // Banco de imagens
       .replace(/Banco de imagens:/gi, '📂 Banco de imagens:')
-      // Nome da pessoa
-      .replace(/(\s+)Nome:/gi, '$1🧑 Nome:')
+      // Nome da pessoa (precisa de espaço antes para não pegar "Nome:" de outros lugares)
+      .replace(/\s+Nome: /gi, '\n🧑 Nome: ')
       // Similaridade
       .replace(/Similaridade:/gi, '📊 Similaridade:')
       // Idade
