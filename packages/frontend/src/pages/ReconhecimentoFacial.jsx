@@ -3,6 +3,36 @@ import { useAuth } from '../contexts/AuthContext';
 import Sidebar from '../components/Sidebar';
 import { api } from '../utils/api';
 
+// Função para obter a URL base do backend (mesma lógica do api.js)
+function getBackendBaseUrl() {
+  const hostname = window.location.hostname;
+
+  // Se tiver variável de ambiente configurada, usar ela
+  if (window.ENV?.VITE_API_URL || import.meta.env.VITE_API_URL) {
+    const apiUrl = window.ENV?.VITE_API_URL || import.meta.env.VITE_API_URL;
+    return apiUrl.replace('/api', ''); // Remove /api para ter só a URL base
+  }
+
+  // Se acessando pelo ngrok
+  if (hostname.includes('.ngrok')) {
+    return 'http://10.6.1.171:3001';
+  }
+
+  // Se acessando pelo domínio Cloudflare
+  if (hostname.includes('prevencaonoradar.com.br')) {
+    return 'https://api.prevencaonoradar.com.br';
+  }
+
+  // Se acessando por IP
+  const isIP = /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname);
+  if (isIP || hostname.startsWith('10.') || hostname.startsWith('192.168.') || hostname.startsWith('172.')) {
+    return `http://${hostname}:3001`;
+  }
+
+  // Padrão: localhost
+  return 'http://localhost:3001';
+}
+
 export default function ReconhecimentoFacial() {
   const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -337,7 +367,7 @@ export default function ReconhecimentoFacial() {
                       <div className="aspect-square bg-gray-200 relative overflow-hidden">
                         {log.image_path ? (
                           <img
-                            src={`http://localhost:3001/uploads/dvr_images/${log.image_path}`}
+                            src={`${getBackendBaseUrl()}/uploads/dvr_images/${log.image_path}`}
                             alt={info.nome || 'Reconhecimento facial'}
                             className="w-full h-full object-cover"
                           />
@@ -452,7 +482,7 @@ export default function ReconhecimentoFacial() {
             <div className="flex-1 bg-black flex items-center justify-center p-4 overflow-auto">
               {imageViewerModal.log.image_path ? (
                 <img
-                  src={`http://localhost:3001/uploads/dvr_images/${imageViewerModal.log.image_path}`}
+                  src={`${getBackendBaseUrl()}/uploads/dvr_images/${imageViewerModal.log.image_path}`}
                   alt="Reconhecimento facial"
                   className="object-contain transition-all duration-200"
                   style={{
