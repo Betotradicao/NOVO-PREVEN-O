@@ -288,53 +288,26 @@ export class EmailMonitorService {
    * Formata o texto do email com emojis para WhatsApp
    */
   private static formatEmailText(text: string): string {
-    // Limpar espaços extras e normalizar quebras de linha
+    // Adicionar emojis mantendo a formatação original do email
     let formattedText = text
-      .trim()
-      // Normalizar múltiplas quebras de linha
-      .replace(/\n{3,}/g, '\n\n')
-      // Remover espaços no início de cada linha
-      .replace(/^\s+/gm, '')
-      // Evento de alarme
-      .replace(/Evento de alarme:/gi, '🚨 Evento de alarme:')
-      // Reconhecimento Facial
-      .replace(/Reconhecimento Facial/gi, '🧠 Reconhecimento Facial')
-      // Alarme no Canal
+      .replace(/Evento de alarme:/gi, '🧠 Evento de alarme:')
       .replace(/Alarme no Canal No\.:/gi, '📡 Alarme no Canal No.:')
-      .replace(/Canal No\.:/gi, '📡 Canal No.:')
-      .replace(/Canal:/gi, '📡 Canal:')
-      // Nome do canal/grupo
-      .replace(/Nome: FACIAL/gi, '📱 Nome: FACIAL')
-      // Horário
+      .replace(/^Nome: FACIAL/gmi, '📱 Nome: FACIAL')
       .replace(/Hor[aá]rio do inicio do alarme\(D\/M\/A H:M:S\):/gi, '🕐 Horário do inicio do alarme(D/M/A H:M:S):')
-      .replace(/Hor[aá]rio:/gi, '🕐 Horário:')
-      // Dispositivo
       .replace(/Nome do dispositivo de alarme:/gi, '📷 Nome do dispositivo de alarme:')
-      .replace(/Dispositivo:/gi, '📷 Dispositivo:')
-      // IP do DVR
+      .replace(/^Nome: Reconhecimento Facial/gmi, '🧑 Nome: Reconhecimento Facial')
       .replace(/End\. IP DVR:/gi, '🌐 End. IP DVR:')
-      // Detalhes do alarme
       .replace(/Detalhes do alarme:/gi, '📋 Detalhes do alarme:')
-      // Modo Comum
-      .replace(/Modo Comum/gi, '⚙️ Modo Comum')
-      // Banco de imagens
-      .replace(/Banco de imagens:/gi, '📂 Banco de imagens:')
-      // Nome da pessoa (precisa de espaço antes para não pegar "Nome:" de outros lugares)
-      .replace(/\s+Nome: /gi, '\n🧑 Nome: ')
-      // Similaridade
-      .replace(/Similaridade:/gi, '📊 Similaridade:')
-      // Idade
-      .replace(/Idade:/gi, '🧓 Idade:')
-      // Gênero
-      .replace(/G[eê]nero:/gi, '⚧️ Gênero:')
-      // Expressão
-      .replace(/Express[aã]o:/gi, '👁️ Expressão:')
-      // Óculos
-      .replace(/[ÓO]culos:/gi, '😎 Óculos:')
-      // Máscara
-      .replace(/M[aá]scara:/gi, '😷 Máscara:')
-      // Barba
-      .replace(/Barba:/gi, '🧔 Barba:');
+      .replace(/^\s*Modo Comum/gmi, '⚙️ Modo Comum')
+      .replace(/^\s*Banco de imagens:/gmi, '📂 Banco de imagens:')
+      .replace(/^\s*Nome: (?!FACIAL|Reconhecimento)/gmi, '🧑 Nome: ')
+      .replace(/^\s*Similaridade:/gmi, '📊 Similaridade:')
+      .replace(/^\s*Idade:/gmi, '🧓 Idade:')
+      .replace(/^\s*G[eê]nero:/gmi, '⚧️ Gênero:')
+      .replace(/^\s*Express[aã]o:/gmi, '👁️ Expressão:')
+      .replace(/^\s*[ÓO]culos:/gmi, '😎 Óculos:')
+      .replace(/^\s*M[aá]scara:/gmi, '😷 Máscara:')
+      .replace(/^\s*Barba:/gmi, '🧔 Barba:');
 
     return formattedText;
   }
