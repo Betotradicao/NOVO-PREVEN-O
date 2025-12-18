@@ -125,6 +125,29 @@ export default function EmailMonitorTab() {
     }
   };
 
+  const handleReprocessLast = async () => {
+    try {
+      setMessage({ type: '', text: '' });
+      const response = await api.post('/email-monitor/reprocess-last');
+
+      if (response.data.success) {
+        showMessage('success', response.data.message);
+      } else {
+        showMessage('error', response.data.error || 'Erro ao reprocessar email');
+      }
+
+      // Recarregar logs após 3 segundos
+      setTimeout(() => {
+        if (activeSubTab === 'logs') {
+          fetchLogs();
+        }
+      }, 3000);
+    } catch (error) {
+      console.error('Erro ao reprocessar email:', error);
+      showMessage('error', error.response?.data?.error || 'Erro ao reprocessar último email');
+    }
+  };
+
   const renderSubTabButtons = () => (
     <div className="border-b border-gray-200 mb-6">
       <nav className="flex space-x-8">
@@ -364,6 +387,12 @@ export default function EmailMonitorTab() {
             className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
           >
             🔄 Atualizar
+          </button>
+          <button
+            onClick={handleReprocessLast}
+            className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+          >
+            🔁 Reenviar Último
           </button>
           <button
             onClick={handleManualCheck}

@@ -481,6 +481,112 @@ export class EmailMonitorService {
   }
 
   /**
+   * Reprocessa o último email recebido (para testes)
+   */
+  static async reprocessLastEmail(): Promise<{ success: boolean; message: string }> {
+    const config = await this.getConfig();
+
+    if (!config.enabled) {
+      return {
+        success: false,
+        message: 'Email monitor está desabilitado'
+      };
+    }
+
+    if (!config.email || !config.app_password) {
+      return {
+        success: false,
+        message: 'Email monitor não está configurado'
+      };
+    }
+
+    let imap: any = null;
+
+    try {
+      console.log('🔄 Reprocessando último email...');
+
+      imap = await this.connect();
+
+      const result = await new Promise<{ success: boolean; message: string }>((resolve, reject) => {
+        imap!.openBox('INBOX', false, (err: any, box: any) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+
+          // Search for last email matching our criteria (seen or unseen)
+          const searchCriteria = ['SUBJECT', config.subject_filter];
+          const fetchOptions = {
+            bodies: '',
+            markSeen: false // Don't mark as seen when reprocessing
+          };
+
+          imap!.search(searchCriteria, (err: any, results: any) => {
+            if (err) {
+              reject(err);
+              return;
+            }
+
+            if (!results || results.length === 0) {
+              resolve({
+                success: false,
+                message: `Nenhum email encontrado com assunto "${config.subject_filter}"`
+              });
+              return;
+            }
+
+            // Get the last email (most recent)
+            const lastEmailId = results[results.length - 1];
+            console.log(`📧 Reprocessando email ID: ${lastEmailId}`);
+
+            const fetch = imap!.fetch([lastEmailId], fetchOptions);
+
+            fetch.on('message', (msg: any, seqno: any) => {
+              msg.on('body', async (stream: any) => {
+                try {
+                  const mail = await simpleParser(stream);
+                  await this.processEmail(mail, config);
+                  resolve({
+                    success: true,
+                    message: `Email "${mail.subject}" reprocessado com sucesso`
+                  });
+                } catch (err) {
+                  console.error(`❌ Erro ao parsear email:`, err);
+                  resolve({
+                    success: false,
+                    message: `Erro ao processar email: ${err instanceof Error ? err.message : 'Erro desconhecido'}`
+                  });
+                }
+              });
+            });
+
+            fetch.once('error', (err: any) => {
+              console.error('❌ Erro ao buscar email:', err);
+              resolve({
+                success: false,
+                message: `Erro ao buscar email: ${err.message}`
+              });
+            });
+          });
+        });
+      });
+
+      return result;
+
+    } catch (error) {
+      console.error('❌ Erro ao reprocessar email:', error);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'Erro desconhecido'
+      };
+    } finally {
+      if (imap) {
+        imap.end();
+      }
+    }
+  }
+
+  /**
    * Busca grupos do WhatsApp via Evolution API
    */
   static async getWhatsAppGroups(): Promise<Array<{ id: string; name: string }>> {

@@ -148,4 +148,32 @@ export class EmailMonitorController {
       });
     }
   }
+
+  /**
+   * POST /api/email-monitor/reprocess-last
+   * Reprocessar o último email recebido (para testes)
+   */
+  async reprocessLastEmail(req: Request, res: Response) {
+    try {
+      const result = await EmailMonitorService.reprocessLastEmail();
+
+      if (result.success) {
+        return res.json({
+          success: true,
+          message: result.message
+        });
+      } else {
+        return res.status(400).json({
+          success: false,
+          error: result.message
+        });
+      }
+    } catch (error) {
+      console.error('Error reprocessing last email:', error);
+      return res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Erro ao reprocessar email'
+      });
+    }
+  }
 }

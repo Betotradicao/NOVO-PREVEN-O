@@ -10,6 +10,7 @@ router.get('/config', authenticateToken, emailMonitorController.getConfig.bind(e
 router.put('/config', authenticateToken, emailMonitorController.updateConfig.bind(emailMonitorController));
 router.post('/test', authenticateToken, emailMonitorController.testConnection.bind(emailMonitorController));
 router.post('/check', authenticateToken, emailMonitorController.checkEmails.bind(emailMonitorController));
+router.post('/reprocess-last', authenticateToken, emailMonitorController.reprocessLastEmail.bind(emailMonitorController));
 router.get('/logs', authenticateToken, emailMonitorController.getLogs.bind(emailMonitorController));
 router.get('/whatsapp-groups', authenticateToken, emailMonitorController.getWhatsAppGroups.bind(emailMonitorController));
 
