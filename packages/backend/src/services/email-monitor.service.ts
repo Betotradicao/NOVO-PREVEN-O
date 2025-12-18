@@ -5,7 +5,6 @@ import { AppDataSource } from '../config/database';
 import { EmailMonitorLog } from '../entities/EmailMonitorLog';
 import * as fs from 'fs';
 import * as path from 'path';
-const pdf = require('pdf-parse');
 
 export interface EmailMonitorConfig {
   email: string;
@@ -112,6 +111,9 @@ export class EmailMonitorService {
    */
   private static async extractImageFromPDF(pdfBuffer: Buffer): Promise<string | null> {
     try {
+      // Lazy load pdf-parse para evitar erros de inicialização
+      const pdf = require('pdf-parse');
+
       // Parse PDF
       const data = await pdf(pdfBuffer);
 
