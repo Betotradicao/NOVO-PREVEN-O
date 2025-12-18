@@ -263,7 +263,11 @@
       "Bash(\"C:\\Program Files\\PuTTY\\plink.exe\" -batch -pw \"Beto310790@#\" root@31.97.82.235 \"cat /root/prevencao-no-radar/packages/backend/.env | grep -E ''DB_|POSTGRES''\")",
       "Bash(\"C:\\Program Files\\PuTTY\\plink.exe\" -batch -pw \"Beto310790@#\" root@31.97.82.235 \"cat /root/prevencao-no-radar/InstaladorVPS/.env | grep -E ''POSTGRES''\")",
       "Bash(\"C:\\Program Files\\PuTTY\\plink.exe\" -batch -pw \"Beto310790@#\" root@31.97.82.235 \"docker logs prevencao-backend-prod 2>&1 | tail -50 | grep -E ''Database|connected|Error|running''\")",
-      "Bash(\"C:\\Program Files\\PuTTY\\plink.exe\" -batch -pw \"Beto310790@#\" root@31.97.82.235 \"docker logs prevencao-backend-prod 2>&1 | tail -5\")"
+      "Bash(\"C:\\Program Files\\PuTTY\\plink.exe\" -batch -pw \"Beto310790@#\" root@31.97.82.235 \"docker logs prevencao-backend-prod 2>&1 | tail -5\")",
+      "Bash(\"C:\\Program Files\\PuTTY\\plink.exe\" -batch -pw \"Beto310790@#\" root@31.97.82.235 \"docker exec -i prevencao-postgres-prod psql -U postgres -c \"\"\\l\"\"\")",
+      "Bash(\"C:\\Program Files\\PuTTY\\plink.exe\" -batch -pw \"Beto310790@#\" root@31.97.82.235 \"docker logs prevencao-backend-prod --tail 50\")",
+      "Bash(\"C:\\Program Files\\PuTTY\\plink.exe\" -batch -pw \"Beto310790@#\" root@31.97.82.235 \"cat /root/prevencao-no-radar/InstaladorVPS/docker-compose-producao.yml | grep -A 3 ''ports:''\")",
+      "Bash(\"C:\\Program Files\\PuTTY\\plink.exe\" -batch -pw \"Beto310790@#\" root@31.97.82.235 \"cd /root/prevencao-no-radar/InstaladorVPS && sed -i ''/^VITE_API_URL=/d'' .env && grep -E ''BACKEND_URL|VITE'' .env\")"
     ],
     "deny": [],
     "ask": []

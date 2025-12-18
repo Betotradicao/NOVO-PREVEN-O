@@ -37,13 +37,14 @@ function getApiBaseUrl() {
     return 'https://api.prevencaonoradar.com.br/api';
   }
 
-  // Se acessando por IP da rede local
-  if (hostname.startsWith('10.') || hostname.startsWith('192.168.')) {
-    console.log('🏠 Rede local detectada');
+  // Se acessando por IP (qualquer IP numérico)
+  const isIP = /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname);
+  if (isIP || hostname.startsWith('10.') || hostname.startsWith('192.168.') || hostname.startsWith('172.')) {
+    console.log('🏠 IP detectado:', hostname);
 
-    // Detectar se está rodando em produção (porta 8080) ou dev (porta 3004)
+    // Detectar se está rodando em produção (porta 3000) ou dev (porta 3004)
     const currentPort = window.location.port;
-    const backendPort = currentPort === '8080' ? '3011' : '3001'; // Produção usa 3011, Dev usa 3001
+    const backendPort = currentPort === '3000' ? '3001' : '3001'; // Sempre usa 3001
 
     console.log(`🔌 Porta atual: ${currentPort}, usando backend na porta: ${backendPort}`);
     return `http://${hostname}:${backendPort}/api`;
