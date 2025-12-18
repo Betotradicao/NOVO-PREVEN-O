@@ -43,7 +43,7 @@ export default function EmailTab() {
 
       setMessage({
         type: 'success',
-        text: 'Configurações de email salvas com sucesso! Reinicie o backend para aplicar.'
+        text: 'Configurações de email salvas com sucesso!'
       });
 
       // Limpar mensagem após 5 segundos
@@ -170,9 +170,9 @@ export default function EmailTab() {
       <div className="mt-6 pt-6 border-t border-gray-200">
         <h3 className="text-sm font-medium text-gray-900 mb-2">Informações</h3>
         <ul className="text-xs text-gray-600 space-y-1 list-disc list-inside">
-          <li>Após salvar, reinicie o container backend para aplicar as mudanças</li>
           <li>Use uma senha de app, não sua senha normal do Gmail</li>
           <li>O email será usado para recuperação de senha e notificações</li>
+          <li>As configurações são aplicadas automaticamente ao salvar</li>
         </ul>
       </div>
     </div>
