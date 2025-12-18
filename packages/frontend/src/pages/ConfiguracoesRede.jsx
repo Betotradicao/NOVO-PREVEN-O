@@ -53,8 +53,12 @@ export default function ConfiguracoesRede() {
 
       const { user: authenticatedUser } = response.data;
 
-      // Verificar se o usuário é master
-      if (authenticatedUser.type === 'admin' && authenticatedUser.isMaster) {
+      // Verificar se o usuário é master (role pode ser 'master' ou 'admin' com isMaster=true)
+      const isMasterUser = authenticatedUser.isMaster === true ||
+                          authenticatedUser.role === 'master' ||
+                          (authenticatedUser.role === 'admin' && authenticatedUser.isMaster);
+
+      if (isMasterUser) {
         setIsAuthenticated(true);
         setShowAuthModal(false);
         setAuthError('');
