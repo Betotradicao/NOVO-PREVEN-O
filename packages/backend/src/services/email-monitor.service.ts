@@ -285,6 +285,44 @@ export class EmailMonitorService {
   }
 
   /**
+   * Formata o texto do email com emojis para WhatsApp
+   */
+  private static formatEmailText(text: string): string {
+    // Adicionar emojis ao texto baseado em palavras-chave
+    let formattedText = text
+      // Reconhecimento Facial
+      .replace(/Reconhecimento Facial/gi, '🧠 Reconhecimento Facial')
+      // Canal
+      .replace(/Canal:/gi, '📡 Canal:')
+      // Horário
+      .replace(/Hor[aá]rio:/gi, '🕐 Horário:')
+      // Dispositivo
+      .replace(/Dispositivo:/gi, '📷 Dispositivo:')
+      // Banco de imagens
+      .replace(/Banco de imagens:/gi, '📂 Banco de imagens:')
+      // Nome
+      .replace(/Nome:/gi, '🧑 Nome:')
+      // Similaridade
+      .replace(/Similaridade:/gi, '📊 Similaridade:')
+      // Idade
+      .replace(/Idade:/gi, '🧓 Idade:')
+      // Gênero
+      .replace(/G[eê]nero:/gi, '⚧️ Gênero:')
+      // Expressão
+      .replace(/Express[aã]o:/gi, '👁️ Expressão:')
+      // Óculos
+      .replace(/[ÓO]culos:/gi, '😎 Óculos:')
+      // Máscara
+      .replace(/M[aá]scara:/gi, '😷 Máscara:')
+      // Barba
+      .replace(/Barba:/gi, '🧔 Barba:')
+      // Evento de alarme
+      .replace(/Evento de alarme:/gi, '🚨 Evento de alarme:');
+
+    return formattedText;
+  }
+
+  /**
    * Envia mensagem e imagem para WhatsApp via Evolution API
    */
   private static async sendToWhatsApp(groupId: string, text: string, imagePath: string): Promise<void> {
@@ -301,6 +339,9 @@ export class EmailMonitorService {
       const imageBuffer = fs.readFileSync(imagePath);
       const base64Image = imageBuffer.toString('base64');
 
+      // Format text with emojis
+      const formattedText = this.formatEmailText(text);
+
       // Send message with image
       const url = `${apiUrl}/message/sendMedia/${instance}`;
 
@@ -308,7 +349,7 @@ export class EmailMonitorService {
         number: groupId,
         mediatype: 'image',
         mimetype: 'image/jpeg',
-        caption: `🚨 Alerta DVR\n\n${text}`,
+        caption: `🚨 ALERTA DVR 🚨\n\n${formattedText}`,
         media: base64Image
       };
 
