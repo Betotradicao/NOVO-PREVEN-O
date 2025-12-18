@@ -278,7 +278,8 @@
       "Bash(\"C:\\Program Files\\PuTTY\\plink.exe\" -batch -pw \"Beto310790@#\" root@31.97.82.235 \"grep -i ''AUTHENTICATION_API_KEY\\|GLOBAL_API_KEY'' /root/evolution.yaml\")",
       "Bash(docker compose exec:*)",
       "Bash(docker compose logs:*)",
-      "Bash(ssh -i ~/.ssh/vps_prevencao root@31.97.82.235 \"cd /root/NOVO-PREVEN-O && git pull && cd InstaladorVPS && docker compose -f docker-compose-producao.yml build --no-cache frontend && docker compose -f docker-compose-producao.yml up -d frontend\")"
+      "Bash(ssh -i ~/.ssh/vps_prevencao root@31.97.82.235 \"cd /root/NOVO-PREVEN-O && git pull && cd InstaladorVPS && docker compose -f docker-compose-producao.yml build --no-cache frontend && docker compose -f docker-compose-producao.yml up -d frontend\")",
+      "Bash(ssh -i ~/.ssh/vps_prevencao root@31.97.82.235 \"cat /root/NOVO-PREVEN-O/packages/frontend/src/components/configuracoes/EmailMonitorTab.jsx | grep -A 5 ''onClick={\\(\\) => setShowPassword''\")"
     ],
     "deny": [],
     "ask": []
