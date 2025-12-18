@@ -90,8 +90,8 @@ const startServer = async () => {
     await AppDataSource.initialize();
     console.log('✅ Database connected successfully');
 
-    // Seed do usuário master
-    await seedMasterUser(AppDataSource);
+    // Seed do usuário master (DESABILITADO - usar first-setup)
+    // await seedMasterUser(AppDataSource);
 
     // Health check automático para manter conexão viva
     // Executa a cada 20 segundos
