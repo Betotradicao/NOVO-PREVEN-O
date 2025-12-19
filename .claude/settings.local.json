@@ -279,7 +279,10 @@
       "Bash(docker compose exec:*)",
       "Bash(docker compose logs:*)",
       "Bash(ssh -i ~/.ssh/vps_prevencao root@31.97.82.235 \"cd /root/NOVO-PREVEN-O && git pull && cd InstaladorVPS && docker compose -f docker-compose-producao.yml build --no-cache frontend && docker compose -f docker-compose-producao.yml up -d frontend\")",
-      "Bash(ssh -i ~/.ssh/vps_prevencao root@31.97.82.235 \"cat /root/NOVO-PREVEN-O/packages/frontend/src/components/configuracoes/EmailMonitorTab.jsx | grep -A 5 ''onClick={\\(\\) => setShowPassword''\")"
+      "Bash(ssh -i ~/.ssh/vps_prevencao root@31.97.82.235 \"cat /root/NOVO-PREVEN-O/packages/frontend/src/components/configuracoes/EmailMonitorTab.jsx | grep -A 5 ''onClick={\\(\\) => setShowPassword''\")",
+      "Bash(node show-pos-configs.js:*)",
+      "Bash(node testar-todos-automatico.js:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: Organiza estrutura do projeto e adiciona integração DVR Intelbras\n\n📁 ORGANIZAÇÃO:\n- Renomeia pasta API para API_INTELBRAS\n- Move NetSDK 3.050 para API_INTELBRAS\n- Move PlaySDK 3.042 para API_INTELBRAS\n- Move Manual e documentação Zanthus para API_INTELBRAS\n- Organiza 43 scripts de teste em API_INTELBRAS/scripts-teste\n\n📧 FEATURES:\n- Adiciona configuração de email via API\n- Corrige problema de senha de 16 caracteres do Gmail\n\n🔧 DVR POS:\n- Adiciona múltiplos scripts de teste POS\n- Adiciona documentação completa da API Intelbras\n- Adiciona guias de integração NetSDK e PlaySDK\n- Identifica problema de travamento com overlay POS\n\n📚 DOCUMENTAÇÃO:\n- DVR_ENDPOINTS_GUIDE.md\n- DVR_INTEGRATION_SUMMARY.md\n- DVR_NETSDK_README.md\n- DVR_POS_INTEGRATION_GUIDE.md\n- PLAYSDK_RESUMO.md\n- TROUBLESHOOTING_DVR.md\n\n🎉 Generated with Claude Code\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ],
     "deny": [],
     "ask": []

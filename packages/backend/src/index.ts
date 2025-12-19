@@ -24,6 +24,7 @@ import setupRouter from './routes/setup.routes';
 import passwordRecoveryRouter from './routes/password-recovery.routes';
 import configurationsRouter from './routes/configurations.routes';
 import emailMonitorRouter from './routes/email-monitor.routes';
+import dvrRouter from './routes/dvr.routes';
 import { minioService } from './services/minio.service';
 import { EmailMonitorService } from './services/email-monitor.service';
 import { seedMasterUser } from './database/seeds/masterUser.seed';
@@ -83,6 +84,7 @@ app.use('/api/companies', companiesRouter);
 app.use('/api/system', systemRouter);
 app.use('/api/configurations', configurationsRouter);
 app.use('/api/email-monitor', emailMonitorRouter);
+app.use('/api/dvr', dvrRouter);
 // app.use('/api/user-security', userSecurityRouter);
 
 const startServer = async () => {
