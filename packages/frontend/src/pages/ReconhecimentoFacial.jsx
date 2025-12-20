@@ -44,13 +44,19 @@ export default function ReconhecimentoFacial() {
   });
   const [imageZoom, setImageZoom] = useState(100);
 
-  // Filtros - padrão: DIA ATUAL
+  // Filtros - padrão: Dia 1 do mês corrente até hoje
+  const getFirstDayOfMonth = () => {
+    const today = new Date();
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    return firstDay.toISOString().split('T')[0];
+  };
+
   const getTodayDate = () => {
     return new Date().toISOString().split('T')[0];
   };
 
   const [filters, setFilters] = useState({
-    date_from: getTodayDate(),
+    date_from: getFirstDayOfMonth(),
     date_to: getTodayDate(),
     banco_imagens: '',
     nome: ''

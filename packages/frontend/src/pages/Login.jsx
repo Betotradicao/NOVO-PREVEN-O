@@ -93,7 +93,11 @@ export default function Login() {
           )}
 
           {/* Login Form */}
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-6" onSubmit={handleSubmit} autoComplete="off">
+            {/* Campos fake escondidos para enganar autocomplete do navegador */}
+            <input type="text" name="fake-username" style={{ display: 'none' }} autoComplete="off" />
+            <input type="password" name="fake-password" style={{ display: 'none' }} autoComplete="new-password" />
+
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                 Email ou Usuário
@@ -102,7 +106,7 @@ export default function Login() {
                 id="email"
                 name="email"
                 type="text"
-                autoComplete="username"
+                autoComplete="off"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -120,7 +124,7 @@ export default function Login() {
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

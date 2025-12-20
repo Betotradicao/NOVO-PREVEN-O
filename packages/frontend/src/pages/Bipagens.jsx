@@ -634,21 +634,6 @@ export default function Bipagens() {
             </select>
           </div>
 
-          {/* Filtro de Notificados */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Notificações
-            </label>
-            <select
-              value={filters.notified_filter}
-              onChange={(e) => handleFilterChange({ ...filters, notified_filter: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500"
-            >
-              <option value="all">Todos</option>
-              <option value="notified_only">Apenas Notificados</option>
-            </select>
-          </div>
-
           {/* Filtro de Busca de Produto */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
