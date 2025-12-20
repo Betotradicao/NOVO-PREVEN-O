@@ -728,6 +728,9 @@ export default function Bipagens() {
                       bipagem
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Leitor
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Produto
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -780,6 +783,20 @@ export default function Bipagens() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">
                         {bip.ean}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {bip.equipment ? (
+                          <div
+                            className="flex items-center justify-center w-10 h-10 rounded-full"
+                            style={{ backgroundColor: bip.equipment.color_hash }}
+                          >
+                            <ScannerGunIcon className="w-6 h-6 text-white" />
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-400">
+                            <ScannerGunIcon className="w-6 h-6 text-white" />
+                          </div>
+                        )}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-900">
                         <div>
