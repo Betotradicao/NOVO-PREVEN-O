@@ -212,8 +212,16 @@ export default function ConfiguracoesRede() {
 
           {/* Content Area */}
           <div className="p-6">
-            <div className="hidden lg:block mb-6">
-              <h1 className="text-2xl font-bold text-gray-900">Configurações de REDE</h1>
+            {/* Card com Gradiente Laranja */}
+            <div className="hidden lg:block bg-gradient-to-br from-orange-500 to-red-600 rounded-lg shadow-lg p-6 mb-6 text-white">
+              <div className="flex items-center justify-between">
+                <h1 className="text-2xl lg:text-3xl font-bold">🌐 Configurações de REDE</h1>
+                <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                  </svg>
+                </div>
+              </div>
             </div>
 
             <TabsNavigation activeTab={activeTab} onChange={handleTabChange} pageType="rede" />

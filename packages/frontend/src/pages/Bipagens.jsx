@@ -482,100 +482,107 @@ export default function Bipagens() {
         </div>
 
         <main className="p-4 lg:p-8">
-      <div className="mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Bipagens Ao Vivo</h1>
-          <p className="text-gray-600 mb-3">
-            Monitoramento em tempo real das bipagens de produtos
-          </p>
+          {/* Card com Gradiente Laranja */}
+          <div className="bg-gradient-to-br from-orange-500 to-red-600 rounded-lg shadow-lg p-6 mb-8 text-white">
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-2xl lg:text-3xl font-bold">📡 Bipagens Ao Vivo</h1>
+              <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+              </div>
+            </div>
 
-          {/* Scanners com Setor e Select de Vendedor */}
-          {equipments.length > 0 && (
-            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-              {equipments.filter(eq => eq.active).map((equipment) => {
-                const loggedEmployee = activeSessions.find(s => s.equipment.id === equipment.id)?.employee;
+            <p className="text-white/90 mb-6">
+              Monitoramento em tempo real das bipagens de produtos
+            </p>
 
-                return (
-                  <div
-                    key={equipment.id}
-                    className="bg-white border border-gray-200 rounded-xl p-3 whitespace-nowrap flex-shrink-0 shadow-sm"
-                  >
-                    {/* Parte superior: Scanner → Vendedor (horizontal) */}
-                    <div className="mb-3 flex flex-col items-center">
-                      {/* Ícones e Seta - centralizados */}
-                      <div className="flex items-start gap-4 mb-1">
-                        {/* Scanner Icon */}
-                        <div className="flex flex-col items-center gap-1">
-                          <div
-                            className="w-10 h-10 rounded-full flex items-center justify-center text-white"
-                            style={{ backgroundColor: equipment.color_hash }}
-                          >
-                            <ScannerGunIcon className="w-6 h-6" />
-                          </div>
-                          <span className="text-[10px] text-gray-600 font-medium">
-                            Scaner {equipment.id}
-                          </span>
-                          {equipment.port_number && (
-                            <span className="text-[9px] text-gray-500 font-semibold">
-                              Porta {equipment.port_number}
-                            </span>
-                          )}
-                        </div>
+            {/* Scanners dentro do card laranja */}
+            {equipments.length > 0 && (
+              <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-white/10">
+                {equipments.filter(eq => eq.active).map((equipment) => {
+                  const loggedEmployee = activeSessions.find(s => s.equipment.id === equipment.id)?.employee;
 
-                        {/* Seta no meio - alinhada apenas com os ícones (h-10) */}
-                        <div className="flex items-center h-10">
-                          <span className="text-gray-400 text-lg">→</span>
-                        </div>
-
-                        {/* Vendedor Icon/Photo */}
-                        <div className="flex flex-col items-center gap-1">
-                          {loggedEmployee?.avatar ? (
-                            <img
-                              src={loggedEmployee.avatar}
-                              alt={loggedEmployee.name}
-                              className="w-10 h-10 rounded-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white font-semibold text-sm">
-                              ?
+                  return (
+                    <div
+                      key={equipment.id}
+                      className="bg-white border border-gray-200 rounded-xl p-3 whitespace-nowrap flex-shrink-0 shadow-sm"
+                    >
+                      {/* Parte superior: Scanner → Vendedor (horizontal) */}
+                      <div className="mb-3 flex flex-col items-center">
+                        {/* Ícones e Seta - centralizados */}
+                        <div className="flex items-start gap-4 mb-1">
+                          {/* Scanner Icon */}
+                          <div className="flex flex-col items-center gap-1">
+                            <div
+                              className="w-10 h-10 rounded-full flex items-center justify-center text-white"
+                              style={{ backgroundColor: equipment.color_hash }}
+                            >
+                              <ScannerGunIcon className="w-6 h-6" />
                             </div>
-                          )}
-                          <span className="text-[10px] text-gray-600 font-medium">
-                            {loggedEmployee?.name?.split(' ')[0] || 'Nenhum'}
-                          </span>
+                            <span className="text-[10px] text-gray-600 font-medium">
+                              Scaner {equipment.id}
+                            </span>
+                            {equipment.port_number && (
+                              <span className="text-[9px] text-gray-500 font-semibold">
+                                Porta {equipment.port_number}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Seta no meio - alinhada apenas com os ícones (h-10) */}
+                          <div className="flex items-center h-10">
+                            <span className="text-gray-400 text-lg">→</span>
+                          </div>
+
+                          {/* Vendedor Icon/Photo */}
+                          <div className="flex flex-col items-center gap-1">
+                            {loggedEmployee?.avatar ? (
+                              <img
+                                src={loggedEmployee.avatar}
+                                alt={loggedEmployee.name}
+                                className="w-10 h-10 rounded-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white font-semibold text-sm">
+                                ?
+                              </div>
+                            )}
+                            <span className="text-[10px] text-gray-600 font-medium">
+                              {loggedEmployee?.name?.split(' ')[0] || 'Nenhum'}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Setor */}
-                    <div className="mb-2">
-                      <span className="text-xs text-gray-500">
-                        Setor: <span className="font-medium text-gray-700">
-                          {equipment.sector?.name || 'Sem setor'}
+                      {/* Setor */}
+                      <div className="mb-2">
+                        <span className="text-xs text-gray-500">
+                          Setor: <span className="font-medium text-gray-700">
+                            {equipment.sector?.name || 'Sem setor'}
+                          </span>
                         </span>
-                      </span>
-                    </div>
+                      </div>
 
-                    {/* Select de Vendedor */}
-                    <select
-                      value={getLoggedEmployee(equipment.id)}
-                      onChange={(e) => handleEmployeeChange(equipment.id, e.target.value)}
-                      className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                    >
-                      <option value="">Selecione o vendedor</option>
-                      {employees.map((employee) => (
-                        <option key={employee.id} value={employee.id}>
-                          {employee.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </div>
+                      {/* Select de Vendedor */}
+                      <select
+                        value={getLoggedEmployee(equipment.id)}
+                        onChange={(e) => handleEmployeeChange(equipment.id, e.target.value)}
+                        className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-gray-900"
+                      >
+                        <option value="">Selecione o vendedor</option>
+                        {employees.map((employee) => (
+                          <option key={employee.id} value={employee.id}>
+                            {employee.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
 
       {/* Filtros */}
       <div className="bg-white rounded-lg shadow p-6 mb-6">

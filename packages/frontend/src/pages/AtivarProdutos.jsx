@@ -326,11 +326,43 @@ export default function AtivarProdutos() {
         </div>
 
         <main className="p-4 lg:p-8">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Ativar Produtos</h1>
-            <p className="text-gray-600">
+          {/* Card de Estatísticas com Gradiente Laranja */}
+          <div className="bg-gradient-to-br from-orange-500 to-red-600 rounded-lg shadow-lg p-6 mb-8 text-white">
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-2xl lg:text-3xl font-bold">Ativar Produtos</h1>
+              <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                </svg>
+              </div>
+            </div>
+
+            <p className="text-white/90 mb-6">
               Gerencie quais produtos devem ser monitorados pelo sistema de prevenção
             </p>
+
+            {/* Grid de Estatísticas */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-white/80 text-sm font-medium mb-1">Total de Produtos</div>
+                <div className="text-3xl font-bold">{products.length}</div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-white/80 text-sm font-medium mb-1">Produtos Ativos</div>
+                <div className="text-3xl font-bold">{products.filter(p => p.active).length}</div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-white/80 text-sm font-medium mb-1">Produtos Inativos</div>
+                <div className="text-3xl font-bold">{products.filter(p => !p.active).length}</div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-white/80 text-sm font-medium mb-1">Selecionados</div>
+                <div className="text-3xl font-bold">{selectedProducts.size}</div>
+              </div>
+            </div>
           </div>
 
           {/* Filtros e Busca */}
