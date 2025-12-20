@@ -81,6 +81,150 @@ export default function EmployeeModal({ employee, onSave, onCancel, onUploadAvat
     }
   };
 
+  const handlePrintBarcode = () => {
+    const printWindow = window.open('', '_blank');
+    const barcodeValue = employee.barcode;
+    const employeeName = employee.name;
+    const employeeFunction = employee.function_description;
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Impressão de Crachá - ${employeeName}</title>
+        <style>
+          @page {
+            size: 10cm 5cm;
+            margin: 0;
+          }
+
+          @media print {
+            body {
+              margin: 0;
+              padding: 0;
+            }
+
+            .no-print {
+              display: none !important;
+            }
+          }
+
+          body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f5f5f5;
+          }
+
+          .badge {
+            width: 10cm;
+            height: 5cm;
+            background: white;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 0.3cm;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          }
+
+          .badge-header {
+            text-align: center;
+            margin-bottom: 0.2cm;
+          }
+
+          .badge-header h2 {
+            margin: 0;
+            font-size: 14pt;
+            font-weight: bold;
+            color: #333;
+          }
+
+          .badge-header p {
+            margin: 0.1cm 0 0 0;
+            font-size: 9pt;
+            color: #666;
+          }
+
+          .barcode-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+          }
+
+          .barcode-container svg {
+            max-width: 8cm;
+            height: auto;
+          }
+
+          .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background: #ff6b35;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          }
+
+          .print-button:hover {
+            background: #ff5722;
+          }
+
+          @media print {
+            .badge {
+              box-shadow: none;
+              page-break-after: always;
+            }
+          }
+        </style>
+        <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+      </head>
+      <body>
+        <button class="print-button no-print" onclick="window.print()">🖨️ Imprimir Crachá</button>
+
+        <div class="badge">
+          <div class="badge-header">
+            <h2>${employeeName}</h2>
+            <p>${employeeFunction}</p>
+          </div>
+
+          <div class="barcode-container">
+            <svg id="barcode"></svg>
+          </div>
+        </div>
+
+        <script>
+          JsBarcode("#barcode", "${barcodeValue}", {
+            format: "CODE128",
+            width: 2,
+            height: 80,
+            displayValue: true,
+            fontSize: 16,
+            margin: 5
+          });
+        </script>
+      </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}>
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] flex flex-col">
@@ -235,9 +379,21 @@ export default function EmployeeModal({ employee, onSave, onCancel, onUploadAvat
                   Código de Barras
                 </label>
                 <BarcodeDisplay value={employee.barcode} />
-                <p className="mt-1 text-xs text-gray-500">
-                  O código de barras não pode ser alterado.
-                </p>
+                <div className="mt-3 flex items-center justify-between">
+                  <p className="text-xs text-gray-500">
+                    O código de barras não pode ser alterado.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handlePrintBarcode}
+                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    Imprimir Crachá
+                  </button>
+                </div>
               </div>
             )}
           </form>
