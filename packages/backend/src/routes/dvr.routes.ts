@@ -3,13 +3,14 @@
  */
 
 import { Router } from 'express';
+import type { Router as RouterType } from 'express';
 import DVRController from '../controllers/dvr.controller';
-import { authMiddleware } from '../middlewares/auth.middleware';
+import { authenticateToken } from '../middleware/auth';
 
-const router = Router();
+const router: RouterType = Router();
 
 // Todas as rotas requerem autenticação
-router.use(authMiddleware);
+router.use(authenticateToken);
 
 /**
  * @swagger
