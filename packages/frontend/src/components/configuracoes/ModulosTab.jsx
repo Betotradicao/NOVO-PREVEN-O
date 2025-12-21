@@ -1,24 +1,41 @@
 import { useState, useEffect } from 'react';
 
 export default function ModulosTab() {
-  const [modules, setModules] = useState([
+  const defaultModules = [
     { id: 'dashboard', name: 'Boas Vindas', icon: '📊', active: true },
     { id: 'bipagens', name: 'Prevenção de Bipagens', icon: '🔍', active: true },
     { id: 'pdv', name: 'Prevenção de PDV', icon: '💳', active: true },
     { id: 'facial', name: 'Prevenção Facial', icon: '👤', active: true }
-  ]);
+  ];
 
+  const [modules, setModules] = useState(defaultModules);
   const [success, setSuccess] = useState(null);
 
-  // Carregar configuração salva do localStorage
+  // Carregar configuração salva do localStorage e migrar dados antigos
   useEffect(() => {
     const savedModules = localStorage.getItem('modules_config');
     if (savedModules) {
       try {
-        setModules(JSON.parse(savedModules));
+        const parsed = JSON.parse(savedModules);
+
+        // Migrar dados antigos: atualizar nomes e remover módulo 'cameras'
+        const migratedModules = defaultModules.map(defaultMod => {
+          const savedMod = parsed.find(m => m.id === defaultMod.id);
+          return savedMod ? { ...defaultMod, active: savedMod.active } : defaultMod;
+        });
+
+        setModules(migratedModules);
+        // Salvar dados migrados
+        localStorage.setItem('modules_config', JSON.stringify(migratedModules));
       } catch (err) {
         console.error('Erro ao carregar módulos:', err);
+        // Em caso de erro, usar valores padrão
+        setModules(defaultModules);
+        localStorage.setItem('modules_config', JSON.stringify(defaultModules));
       }
+    } else {
+      // Primeira vez: salvar valores padrão
+      localStorage.setItem('modules_config', JSON.stringify(defaultModules));
     }
   }, []);
 
