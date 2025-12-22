@@ -148,11 +148,73 @@ export default function EmailMonitorTab() {
     }
   };
 
-  const renderMonitorDVRTab = () => {
-    // Redirecionar automaticamente para a página do Monitor DVR
-    window.location.href = '/monitorar-email-dvr';
-    return null;
-  };
+  const renderMonitorDVRTab = () => (
+    <div className="space-y-6">
+      <p className="text-sm text-gray-600 mb-4">
+        Configure e monitore automaticamente o bug do DVR Intelbras que corrompe a senha do email
+      </p>
+
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="flex items-start space-x-3">
+          <svg className="w-6 h-6 text-blue-600 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-blue-900 mb-2">Monitor Automático DVR Intelbras</h3>
+            <p className="text-sm text-blue-800 mb-3">
+              O Monitor DVR verifica e corrige automaticamente o bug do DVR Intelbras que corrompe a senha do email.
+            </p>
+            <a
+              href="/monitorar-email-dvr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+            >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+              Abrir Tela Completa do Monitor DVR
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg shadow-sm p-6 border border-orange-200">
+        <h3 className="text-lg font-bold mb-3 text-orange-900 flex items-center gap-2">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+          Sobre o Bug do DVR
+        </h3>
+
+        <div className="space-y-3 text-sm text-gray-700">
+          <p>
+            <strong className="text-orange-900">Problema:</strong> O DVR Intelbras tem um bug onde, ao salvar uma senha curta (exemplo: 4 caracteres),
+            ele adiciona automaticamente 16 caracteres "fantasmas" do buffer de memória, totalizando 20 caracteres.
+            Isso faz com que a autenticação SMTP falhe.
+          </p>
+
+          <p><strong className="text-orange-900">Solução Automática:</strong> Este monitor verifica periodicamente se a senha está correta. Quando detecta o bug, ele automaticamente:</p>
+
+          <ol className="list-decimal list-inside space-y-1 ml-4 text-gray-600">
+            <li>Limpa a senha corrompida</li>
+            <li>Aguarda 2 segundos (limpar buffer de memória)</li>
+            <li>Aplica a senha correta salva no sistema</li>
+            <li>Reinicia o serviço de email do DVR</li>
+          </ol>
+
+          <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-4">
+            <p className="text-green-800 font-semibold flex items-center gap-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              Com este monitor ativo, você nunca mais vai precisar corrigir manualmente a senha do email!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   const renderSubTabButtons = () => (
     <div className="border-b border-gray-200 mb-6">
