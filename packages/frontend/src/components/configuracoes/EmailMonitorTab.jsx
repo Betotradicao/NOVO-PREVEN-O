@@ -148,6 +148,31 @@ export default function EmailMonitorTab() {
     }
   };
 
+  const renderMonitorDVRTab = () => (
+    <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+      <div className="flex items-start space-x-3">
+        <svg className="w-6 h-6 text-blue-600 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <div className="flex-1">
+          <h3 className="text-lg font-semibold text-blue-900 mb-2">Monitor Automático DVR Intelbras</h3>
+          <p className="text-sm text-blue-800 mb-4">
+            O Monitor DVR verifica e corrige automaticamente o bug do DVR Intelbras que corrompe a senha do email.
+          </p>
+          <a
+            href="/monitorar-email-dvr"
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+            Abrir Monitor DVR
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+
   const renderSubTabButtons = () => (
     <div className="border-b border-gray-200 mb-6">
       <nav className="flex space-x-8">
