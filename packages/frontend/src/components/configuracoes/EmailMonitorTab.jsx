@@ -180,7 +180,8 @@ export default function EmailMonitorTab() {
           { id: 'gmail', label: 'Gmail', icon: '📧' },
           { id: 'filters', label: 'Filtros', icon: '🔍' },
           { id: 'whatsapp', label: 'WhatsApp', icon: '📱' },
-          { id: 'logs', label: 'Logs', icon: '📊' }
+          { id: 'logs', label: 'Logs', icon: '📊' },
+          { id: 'monitor-dvr', label: 'Monitor DVR', icon: '🔧' }
         ].map(tab => (
           <button
             key={tab.id}
