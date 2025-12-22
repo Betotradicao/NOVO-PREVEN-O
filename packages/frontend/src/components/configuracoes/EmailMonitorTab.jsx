@@ -506,6 +506,7 @@ export default function EmailMonitorTab() {
       {activeSubTab === 'filters' && renderFiltersTab()}
       {activeSubTab === 'whatsapp' && renderWhatsAppTab()}
       {activeSubTab === 'logs' && renderLogsTab()}
+      {activeSubTab === 'monitor-dvr' && renderMonitorDVRTab()}
     </div>
   );
 }
