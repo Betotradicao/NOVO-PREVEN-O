@@ -161,11 +161,11 @@ export default function MonitorarEmailDVR() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50">
       <Sidebar user={user} onLogout={logout} isMobileMenuOpen={isMobileMenuOpen} setIsMobileMenuOpen={setIsMobileMenuOpen} />
 
-      <div className="lg:ml-64 pt-2 px-4 lg:pt-4 lg:px-8 pb-8">
-        <div className="max-w-7xl mx-auto">
+      <div className="flex-1 overflow-auto lg:ml-0">
+        <div className="p-6 max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-4">
             <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
