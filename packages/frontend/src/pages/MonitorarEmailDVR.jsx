@@ -20,13 +20,43 @@ export default function MonitorarEmailDVR() {
     intervaloMinutos: 5
   });
   const [mensagem, setMensagem] = useState(null);
+  const [mostrarSenhaDVR, setMostrarSenhaDVR] = useState(false);
+  const [mostrarSenhaGmail, setMostrarSenhaGmail] = useState(false);
+  const [intervaloHoras, setIntervaloHoras] = useState('00');
+  const [intervaloMinutos, setIntervaloMinutosLocal] = useState('05');
 
-  // Carregar status ao montar componente
+  // Carregar status e configurações ao montar componente
   useEffect(() => {
     carregarStatus();
+    carregarConfiguracoes();
     const interval = setInterval(carregarStatus, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  const carregarConfiguracoes = async () => {
+    try {
+      // Buscar configuração do DVR
+      const responseDVR = await api.get('/dvr-monitor/config');
+      if (responseDVR.data) {
+        setConfigDVR(responseDVR.data);
+
+        // Converter intervalo de minutos para HH:MM
+        const minutos = responseDVR.data.intervaloMinutos || 5;
+        const horas = Math.floor(minutos / 60);
+        const mins = minutos % 60;
+        setIntervaloHoras(String(horas).padStart(2, '0'));
+        setIntervaloMinutosLocal(String(mins).padStart(2, '0'));
+      }
+
+      // Buscar senha do Gmail da aba Gmail
+      const responseEmailMonitor = await api.get('/email-monitor/config');
+      if (responseEmailMonitor.data?.app_password) {
+        setSenhaGmail(responseEmailMonitor.data.app_password);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar configurações:', error);
+    }
+  };
 
   const carregarStatus = async () => {
     try {
@@ -101,7 +131,14 @@ export default function MonitorarEmailDVR() {
     setLoading(true);
     setMensagem(null);
     try {
-      await api.post('/dvr-monitor/config', configDVR);
+      // Converter HH:MM para minutos totais
+      const totalMinutos = (parseInt(intervaloHoras) * 60) + parseInt(intervaloMinutos);
+      const configParaSalvar = {
+        ...configDVR,
+        intervaloMinutos: totalMinutos
+      };
+
+      await api.post('/dvr-monitor/config', configParaSalvar);
       setMensagem({ tipo: 'success', texto: 'Configurações salvas!' });
     } catch (error) {
       setMensagem({ tipo: 'error', texto: error.response?.data?.error || 'Erro ao salvar configurações' });
@@ -196,13 +233,31 @@ export default function MonitorarEmailDVR() {
                 <p className="text-sm text-blue-800">Esta é a senha correta que será usada para corrigir automaticamente o bug do DVR</p>
               </div>
 
-              <input
-                type="password"
-                value={senhaGmail}
-                onChange={(e) => setSenhaGmail(e.target.value)}
-                placeholder="Digite a senha correta do Gmail"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              <div className="relative mb-4">
+                <input
+                  type={mostrarSenhaGmail ? "text" : "password"}
+                  value={senhaGmail}
+                  onChange={(e) => setSenhaGmail(e.target.value)}
+                  placeholder="Digite a senha correta do Gmail"
+                  className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <button
+                  type="button"
+                  onClick={() => setMostrarSenhaGmail(!mostrarSenhaGmail)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  {mostrarSenhaGmail ? (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                    </svg>
+                  )}
+                </button>
+              </div>
 
               <button onClick={salvarSenhaGmail} disabled={loading} className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50">
                 💾 Salvar Senha
@@ -236,22 +291,67 @@ export default function MonitorarEmailDVR() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Senha do DVR</label>
-                  <input
-                    type="password"
-                    value={configDVR.senha}
-                    onChange={(e) => setConfigDVR({ ...configDVR, senha: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  />
+                  <div className="relative">
+                    <input
+                      type={mostrarSenhaDVR ? "text" : "password"}
+                      value={configDVR.senha}
+                      onChange={(e) => setConfigDVR({ ...configDVR, senha: e.target.value })}
+                      className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setMostrarSenhaDVR(!mostrarSenhaDVR)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    >
+                      {mostrarSenhaDVR ? (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                      ) : (
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                        </svg>
+                      )}
+                    </button>
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Intervalo (min)</label>
-                  <input
-                    type="number"
-                    value={configDVR.intervaloMinutos}
-                    onChange={(e) => setConfigDVR({ ...configDVR, intervaloMinutos: parseInt(e.target.value) || 5 })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  />
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Intervalo de Verificação</label>
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                      <input
+                        type="number"
+                        min="0"
+                        max="23"
+                        value={intervaloHoras}
+                        onChange={(e) => {
+                          const valor = e.target.value.padStart(2, '0');
+                          setIntervaloHoras(valor);
+                        }}
+                        placeholder="HH"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-center"
+                      />
+                      <p className="text-xs text-gray-500 text-center mt-1">Horas</p>
+                    </div>
+                    <span className="text-2xl font-bold text-gray-400 self-center">:</span>
+                    <div className="flex-1">
+                      <input
+                        type="number"
+                        min="0"
+                        max="59"
+                        value={intervaloMinutos}
+                        onChange={(e) => {
+                          const valor = e.target.value.padStart(2, '0');
+                          setIntervaloMinutosLocal(valor);
+                        }}
+                        placeholder="MM"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-center"
+                      />
+                      <p className="text-xs text-gray-500 text-center mt-1">Minutos</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
