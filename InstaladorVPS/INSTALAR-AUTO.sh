@@ -319,6 +319,19 @@ ON CONFLICT (key) DO UPDATE SET
 " 2>/dev/null
 
 echo "✅ Configurações do MinIO salvas!"
+
+# Inserir configurações de Email (Gmail)
+docker exec prevencao-postgres-prod psql -U postgres -d prevencao_db -c "
+INSERT INTO configurations (key, value, encrypted, created_at, updated_at)
+VALUES
+  ('email_user', 'betotradicao76@gmail.com', false, NOW(), NOW()),
+  ('email_pass', 'ylljjijqstxnwogk', false, NOW(), NOW())
+ON CONFLICT (key) DO UPDATE SET
+  value = EXCLUDED.value,
+  updated_at = NOW();
+" 2>/dev/null
+
+echo "✅ Configurações de Email (Gmail) salvas!"
 echo ""
 
 # ============================================
