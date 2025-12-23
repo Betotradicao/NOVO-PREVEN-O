@@ -99,9 +99,10 @@ fi
 # Auth Key do Tailscale (gerada em: https://login.tailscale.com/admin/settings/keys)
 TAILSCALE_AUTH_KEY="tskey-auth-kLo2sjchU711CNTRL-pZf7CjM9vsWk1uXVn9EytWSGLNRCav1Xa"
 
-# Iniciar Tailscale com autenticação automática
-echo "🚀 Conectando ao Tailscale automaticamente..."
-tailscale up --authkey="$TAILSCALE_AUTH_KEY" --accept-routes --shields-up=false
+# Iniciar Tailscale com autenticação automática via Auth Key
+echo "🚀 Conectando ao Tailscale automaticamente (via Auth Key)..."
+tailscale up --authkey="$TAILSCALE_AUTH_KEY" --accept-routes --shields-up=false 2>&1 | tee /tmp/tailscale-auth.log &
+TAILSCALE_PID=$!
 
 # Aguardar conexão ser estabelecida
 sleep 5
@@ -109,11 +110,18 @@ sleep 5
 # Obter IP do Tailscale
 TAILSCALE_IP=$(tailscale ip -4 2>/dev/null || echo "")
 
+# Tentar extrair link de autenticação manual (caso a Auth Key tenha expirado)
+TAILSCALE_AUTH_URL=$(grep -o 'https://login.tailscale.com/a/[a-z0-9]*' /tmp/tailscale-auth.log 2>/dev/null | head -n 1)
+
 if [ -n "$TAILSCALE_IP" ]; then
-    echo "✅ Tailscale conectado com sucesso!"
+    echo "✅ Tailscale conectado com sucesso via Auth Key!"
     echo "📍 IP Tailscale da VPS: $TAILSCALE_IP"
 else
-    echo "⚠️  Aviso: Não foi possível obter IP do Tailscale"
+    echo "⚠️  Aviso: Não foi possível conectar automaticamente"
+    if [ -n "$TAILSCALE_AUTH_URL" ]; then
+        echo "ℹ️  Auth Key pode ter expirado. Use autenticação manual:"
+        echo "   $TAILSCALE_AUTH_URL"
+    fi
 fi
 
 echo ""
@@ -304,14 +312,23 @@ echo "🔗 TAILSCALE (Rede Privada Virtual):"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 if [ -n "$TAILSCALE_IP" ]; then
-    echo "   ✅ Status: Conectado automaticamente!"
+    echo "   ✅ Status: Conectado automaticamente via Auth Key!"
     echo "   🌐 IP da VPS na rede Tailscale: $TAILSCALE_IP"
     echo "   💾 IP salvo automaticamente no banco de dados"
     echo ""
     echo "   💡 Configure o IP do cliente em: Configurações → Tailscale"
 else
     echo "   ⚠️  Aviso: Tailscale não conectou automaticamente"
-    echo "   Execute: sudo tailscale up --authkey=SUA_CHAVE"
+    echo ""
+    if [ -n "$TAILSCALE_AUTH_URL" ]; then
+        echo "   🔐 Auth Key pode ter expirado. Use autenticação manual:"
+        echo "      $TAILSCALE_AUTH_URL"
+        echo ""
+        echo "   Após autenticar, execute para ver o IP:"
+        echo "      tailscale ip -4"
+    else
+        echo "   Execute: sudo tailscale up --authkey=SUA_CHAVE"
+    fi
 fi
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
