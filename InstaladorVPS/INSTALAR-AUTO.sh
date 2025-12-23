@@ -96,19 +96,25 @@ else
     echo "✅ Tailscale já instalado"
 fi
 
-# Iniciar Tailscale em modo não-interativo (não bloqueia o script)
-echo "🚀 Iniciando Tailscale..."
-tailscale up --accept-routes --shields-up=false 2>&1 | tee /tmp/tailscale-auth.log &
-TAILSCALE_PID=$!
+# Auth Key do Tailscale (gerada em: https://login.tailscale.com/admin/settings/keys)
+TAILSCALE_AUTH_KEY="tskey-auth-kLo2sjchU711CNTRL-pZf7CjM9vsWk1uXVn9EytWSGLNRCav1Xa"
 
-# Aguardar alguns segundos para o link de autenticação aparecer
-sleep 3
+# Iniciar Tailscale com autenticação automática
+echo "🚀 Conectando ao Tailscale automaticamente..."
+tailscale up --authkey="$TAILSCALE_AUTH_KEY" --accept-routes --shields-up=false
 
-# Tentar extrair o link de autenticação
-TAILSCALE_AUTH_URL=$(grep -o 'https://login.tailscale.com/a/[a-z0-9]*' /tmp/tailscale-auth.log | head -n 1)
+# Aguardar conexão ser estabelecida
+sleep 5
 
-# Obter IP do Tailscale (pode estar vazio se ainda não autenticado)
+# Obter IP do Tailscale
 TAILSCALE_IP=$(tailscale ip -4 2>/dev/null || echo "")
+
+if [ -n "$TAILSCALE_IP" ]; then
+    echo "✅ Tailscale conectado com sucesso!"
+    echo "📍 IP Tailscale da VPS: $TAILSCALE_IP"
+else
+    echo "⚠️  Aviso: Não foi possível obter IP do Tailscale"
+fi
 
 echo ""
 
@@ -116,29 +122,12 @@ echo ""
 # IP TAILSCALE DO CLIENTE (WINDOWS/ERP)
 # ============================================
 
-# Verificar se foi passado via variável de ambiente (do INSTALAR-DIRETO.sh)
-if [ -n "$TAILSCALE_CLIENT_IP_AUTO" ]; then
-    TAILSCALE_CLIENT_IP="$TAILSCALE_CLIENT_IP_AUTO"
-    echo "✅ IP Tailscale do cliente configurado: $TAILSCALE_CLIENT_IP"
-    echo ""
-else
-    echo "🏪 Configuração do Cliente (Loja)"
-    echo ""
-    echo "Se o cliente possui Tailscale instalado na máquina onde roda o ERP,"
-    echo "informe o IP Tailscale para conectar automaticamente."
-    echo ""
-    echo "Exemplo: 100.69.131.40"
-    echo ""
-    read -p "IP Tailscale da máquina do cliente (deixe vazio se não usar): " TAILSCALE_CLIENT_IP
+# O IP do cliente será configurado depois pela interface web
+# em Configurações → Tailscale
+TAILSCALE_CLIENT_IP=""
 
-    if [ -n "$TAILSCALE_CLIENT_IP" ]; then
-        echo "✅ IP Tailscale do cliente configurado: $TAILSCALE_CLIENT_IP"
-    else
-        echo "⚠️  Sem IP Tailscale do cliente. Conexão com ERP será local/manual."
-    fi
-
-    echo ""
-fi
+echo "ℹ️  O IP Tailscale do cliente será configurado pela interface web"
+echo ""
 
 # ============================================
 # GERAÇÃO DE SENHAS ALEATÓRIAS
@@ -315,23 +304,14 @@ echo "🔗 TAILSCALE (Rede Privada Virtual):"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 if [ -n "$TAILSCALE_IP" ]; then
-    echo "   ✅ Status: Conectado"
+    echo "   ✅ Status: Conectado automaticamente!"
     echo "   🌐 IP da VPS na rede Tailscale: $TAILSCALE_IP"
+    echo "   💾 IP salvo automaticamente no banco de dados"
     echo ""
-    echo "   💡 Use este IP para acessar APIs locais dos clientes"
+    echo "   💡 Configure o IP do cliente em: Configurações → Tailscale"
 else
-    echo "   ⚠️  Status: Aguardando autenticação"
-    echo ""
-    if [ -n "$TAILSCALE_AUTH_URL" ]; then
-        echo "   🔐 Para conectar, abra este link no navegador:"
-        echo "      $TAILSCALE_AUTH_URL"
-        echo ""
-        echo "   Após autenticar, execute para ver o IP:"
-        echo "      tailscale ip -4"
-    else
-        echo "   Execute o comando abaixo para obter o link de autenticação:"
-        echo "      sudo tailscale up"
-    fi
+    echo "   ⚠️  Aviso: Tailscale não conectou automaticamente"
+    echo "   Execute: sudo tailscale up --authkey=SUA_CHAVE"
 fi
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
