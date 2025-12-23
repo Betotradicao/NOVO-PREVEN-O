@@ -96,44 +96,52 @@ else
     echo "✅ Tailscale já instalado"
 fi
 
-# Iniciar Tailscale e obter link de autenticação manual
+# Forçar re-autenticação do Tailscale (limpar sessão antiga)
 echo "🚀 Iniciando Tailscale..."
-tailscale up --accept-routes --shields-up=false 2>&1 | tee /tmp/tailscale-auth.log &
+echo "🔄 Limpando autenticações antigas..."
+
+# Fazer logout forçado (ignora erros se já estiver deslogado)
+tailscale logout 2>/dev/null || true
+
+# Limpar estado antigo do Tailscale
+rm -f /tmp/tailscale-auth.log
+
+# Iniciar Tailscale com --reset para forçar nova autenticação
+tailscale up --reset --accept-routes --shields-up=false 2>&1 | tee /tmp/tailscale-auth.log &
 TAILSCALE_PID=$!
 
 # Aguardar link de autenticação ser gerado
-sleep 3
+sleep 5
 
 # Extrair link de autenticação
 TAILSCALE_AUTH_URL=$(grep -o 'https://login.tailscale.com/a/[a-z0-9]*' /tmp/tailscale-auth.log 2>/dev/null | head -n 1)
 
-# Tentar obter IP (caso já esteja autenticado)
-TAILSCALE_IP=$(tailscale ip -4 2>/dev/null || echo "")
+# Verificar se conseguiu obter o link
+TAILSCALE_IP=""
 
-if [ -n "$TAILSCALE_IP" ]; then
-    echo "✅ Tailscale já estava autenticado!"
-    echo "📍 IP Tailscale da VPS: $TAILSCALE_IP"
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🔐 AUTENTICAÇÃO TAILSCALE NECESSÁRIA"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+if [ -n "$TAILSCALE_AUTH_URL" ]; then
+    echo "   Abra este link no navegador para autenticar:"
+    echo ""
+    echo "   $TAILSCALE_AUTH_URL"
+    echo ""
+    echo "   ⏳ Após autenticar, o sistema detectará automaticamente o IP"
+    echo "   💾 O IP será salvo automaticamente no banco de dados"
+    echo ""
+    echo "   ℹ️  A instalação continuará automaticamente após você autenticar!"
 else
+    echo "   ⚠️  Link não foi gerado no log."
+    echo "   Execute manualmente para gerar o link:"
     echo ""
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "🔐 AUTENTICAÇÃO TAILSCALE NECESSÁRIA"
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo ""
-    if [ -n "$TAILSCALE_AUTH_URL" ]; then
-        echo "   Abra este link no navegador para autenticar:"
-        echo ""
-        echo "   $TAILSCALE_AUTH_URL"
-        echo ""
-        echo "   ⏳ Após autenticar, o sistema detectará automaticamente o IP"
-        echo "   💾 O IP será salvo automaticamente no banco de dados"
-    else
-        echo "   ⚠️  Link não encontrado. Execute manualmente:"
-        echo "   tailscale up --accept-routes --shields-up=false"
-    fi
-    echo ""
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "   tailscale up --reset --accept-routes --shields-up=false"
     echo ""
 fi
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
 
 echo ""
 
