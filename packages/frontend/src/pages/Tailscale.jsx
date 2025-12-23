@@ -301,22 +301,6 @@ export default function Tailscale() {
                     )}
                   </div>
                 </div>
-
-                {/* DVR HTTP */}
-                <div className={`p-4 rounded-lg border-2 ${getStatusColor(testResults.tests.dvr_http.color)}`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <span className="text-2xl">{getStatusIcon(testResults.tests.dvr_http.status)}</span>
-                      <div>
-                        <p className="font-semibold">{testResults.tests.dvr_http.description}</p>
-                        <p className="text-sm">{testResults.tests.dvr_http.message}</p>
-                      </div>
-                    </div>
-                    {testResults.tests.dvr_http.response_time_ms && (
-                      <span className="text-sm font-mono">{testResults.tests.dvr_http.response_time_ms}ms</span>
-                    )}
-                  </div>
-                </div>
               </div>
             )}
 
