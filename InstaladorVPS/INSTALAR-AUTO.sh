@@ -262,6 +262,27 @@ echo "⏳ Aguardando containers iniciarem..."
 sleep 10
 
 # ============================================
+# CONFIGURAR IP TAILSCALE NO BANCO
+# ============================================
+
+if [ -n "$TAILSCALE_IP" ]; then
+    echo "💾 Salvando IP Tailscale da VPS no banco de dados..."
+
+    # Aguardar PostgreSQL estar pronto
+    sleep 5
+
+    # Inserir IP Tailscale da VPS no banco
+    docker exec prevencao-postgres-prod psql -U postgres -d prevencao_db -c "
+    INSERT INTO configurations (key, value, encrypted, created_at, updated_at)
+    VALUES ('tailscale_vps_ip', '$TAILSCALE_IP', false, NOW(), NOW())
+    ON CONFLICT (key) DO UPDATE SET value = '$TAILSCALE_IP', updated_at = NOW();
+    " 2>/dev/null
+
+    echo "✅ IP Tailscale da VPS configurado automaticamente: $TAILSCALE_IP"
+    echo ""
+fi
+
+# ============================================
 # EXIBIR STATUS
 # ============================================
 
