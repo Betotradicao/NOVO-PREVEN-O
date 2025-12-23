@@ -277,6 +277,14 @@ if [ -n "$TAILSCALE_IP" ]; then
 
     echo "✅ IP Tailscale da VPS configurado automaticamente: $TAILSCALE_IP"
     echo ""
+else
+    # IP não detectado ainda - iniciar sincronização automática em background
+    echo "🔄 IP Tailscale ainda não detectado. Iniciando sincronização automática..."
+    chmod +x sync-tailscale-ip.sh
+    nohup ./sync-tailscale-ip.sh > /tmp/tailscale-sync.log 2>&1 &
+    echo "✅ Monitor de sincronização iniciado em background"
+    echo "ℹ️  O IP será salvo automaticamente quando o Tailscale conectar"
+    echo ""
 fi
 
 # ============================================
