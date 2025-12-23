@@ -296,7 +296,8 @@
       "Bash(sshpass -p 'Beto3107@@##' ssh -o StrictHostKeyChecking=no root@46.202.150.64 \"uname -a && lsb_release -a 2>/dev/null || cat /etc/os-release\")",
       "Bash(ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password root@46.202.150.64 \"uname -a\")",
       "Bash(ssh -i ~/.ssh/vps_dev_prevencao root@46.202.150.64 \"ls -lh /root/backup_prod_prevencao.sql\")",
-      "Bash(ssh -i ~/.ssh/vps_dev_prevencao root@46.202.150.64 \"\n  sleep 10 &&\n  docker exec -i prevencao-postgres-prod psql -U postgres prevencao_db < /root/backup_prod_prevencao.sql &&\n  echo ''✅ Backup restaurado com sucesso''\n\")"
+      "Bash(ssh -i ~/.ssh/vps_dev_prevencao root@46.202.150.64 \"\n  sleep 10 &&\n  docker exec -i prevencao-postgres-prod psql -U postgres prevencao_db < /root/backup_prod_prevencao.sql &&\n  echo ''✅ Backup restaurado com sucesso''\n\")",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfix: Corrige cálculo de status geral do Tailscale\n\n- Remove dvr_http do cálculo do status geral\n- Agora considera apenas vps_to_client e vps_to_dvr\n- Badge ficará verde quando ambos testes passarem\n- Resolve inconsistência visual \\(badge vermelho com testes verdes\\)\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ],
     "deny": [],
     "ask": []

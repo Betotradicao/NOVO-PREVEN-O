@@ -202,8 +202,8 @@ export class TailscaleService {
   private static calculateOverallStatus(results: any) {
     const statuses = [
       results.vps_to_client.status,
-      results.vps_to_dvr.status,
-      results.dvr_http.status
+      results.vps_to_dvr.status
+      // Removido dvr_http - não é mais usado na interface
     ];
 
     if (statuses.includes('not_configured')) {
