@@ -93,8 +93,7 @@ export class TailscaleService {
 
     const results = {
       vps_to_client: await this.pingTest(config.client_ip, 'VPS → Cliente'),
-      vps_to_dvr: await this.pingTest(config.dvr_ip, 'VPS → Sistema Local (via Cliente)'),
-      dvr_http: await this.httpTest(config.dvr_ip, 'Sistema Local HTTP')
+      vps_to_dvr: await this.pingTest(config.dvr_ip, 'VPS → Sistema Local (via Cliente)')
     };
 
     return {
