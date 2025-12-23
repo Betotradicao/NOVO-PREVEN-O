@@ -123,6 +123,83 @@ async function seedConfigurations() {
         key: 'tailscale_client_ip',
         value: process.env.TAILSCALE_CLIENT_IP || '',
         description: 'IP Tailscale da máquina do cliente (onde roda o ERP)'
+      },
+
+      // APIs PRÉ-CONFIGURADAS (apenas Zanthus, Intersolid e Evolution)
+      // Zanthus ERP
+      {
+        key: 'zanthus_api_url',
+        value: 'http://10.6.1.101',
+        description: 'URL da API Zanthus'
+      },
+      {
+        key: 'zanthus_port',
+        value: '',
+        description: 'Porta da API Zanthus (opcional)'
+      },
+      {
+        key: 'zanthus_products_endpoint',
+        value: '/manager/restful/integracao/cadastro_sincrono.php5',
+        description: 'Endpoint de produtos Zanthus'
+      },
+      {
+        key: 'zanthus_sales_endpoint',
+        value: '/manager/restful/integracao/cadastro_sincrono.php5',
+        description: 'Endpoint de vendas Zanthus'
+      },
+
+      // Intersolid ERP
+      {
+        key: 'intersolid_api_url',
+        value: 'http://10.6.1.102',
+        description: 'URL da API Intersolid'
+      },
+      {
+        key: 'intersolid_port',
+        value: '3003',
+        description: 'Porta da API Intersolid'
+      },
+      {
+        key: 'intersolid_username',
+        value: 'ROBERTO',
+        description: 'Usuário da API Intersolid'
+      },
+      {
+        key: 'intersolid_password',
+        value: '312013@#',
+        description: 'Senha da API Intersolid'
+      },
+      {
+        key: 'intersolid_products_endpoint',
+        value: '/v1/produtos',
+        description: 'Endpoint de produtos Intersolid'
+      },
+      {
+        key: 'intersolid_sales_endpoint',
+        value: '/v1/vendas',
+        description: 'Endpoint de vendas Intersolid'
+      },
+
+      // Evolution API (WhatsApp)
+      {
+        key: 'evolution_api_url',
+        value: 'http://31.97.82.235:8090',
+        description: 'URL da Evolution API (WhatsApp)'
+      },
+      {
+        key: 'evolution_api_token',
+        value: 'E73D57BB-5AEF-4560-87E6-966C933CE1DA',
+        description: 'Token de autenticação Evolution API'
+      },
+      {
+        key: 'evolution_instance',
+        value: 'FACIAL_TRADICAO_L1',
+        description: 'Nome da instância Evolution API'
+      },
+      {
+        key: 'evolution_whatsapp_group_id',
+        value: '120363422563235781@g.us',
+        description: 'ID do grupo WhatsApp para notificações'
       }
     ];
 
