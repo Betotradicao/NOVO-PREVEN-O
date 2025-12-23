@@ -304,49 +304,89 @@ async function salvarConfig(key: string, value: string) {
 
 ## 🚀 DEPLOY PARA PRODUÇÃO VIA SSH
 
-### Método 1: SSH Automático (Sem Pedir Senha)
+### ⚠️ IMPORTANTE: Caminhos Corretos da VPS
 
-**Configurar uma única vez:**
+**PRODUÇÃO (IP: 31.97.82.235)**
+- 🔑 **Chave SSH:** `~/.ssh/vps_prevencao`
+- 📁 **Diretório:** `/root/NOVO-PREVEN-O` (não é prevencao-no-radar!)
+- 🐳 **Docker Compose:** `InstaladorVPS/docker-compose-producao.yml` (não é docker-compose.yml!)
+- 🏷️ **Container Frontend:** `prevencao-frontend-prod`
+- 🏷️ **Container Backend:** `prevencao-backend-prod`
 
-```bash
-# Verificar se chave SSH existe
-ls ~/.ssh/vps_prevencao
+**DESENVOLVIMENTO (IP: 46.202.150.64)**
+- 🔑 **Chave SSH:** `~/.ssh/vps_dev_prevencao`
+- 📁 **Diretório:** `/root/NOVO-PREVEN-O`
+- 🐳 **Docker Compose:** `InstaladorVPS/docker-compose.yml`
+- 🏷️ **Container Frontend:** `prevencao-frontend`
+- 🏷️ **Container Backend:** `prevencao-backend`
 
-# Se não existir, criar:
-ssh-keygen -t rsa -b 4096 -f ~/.ssh/vps_prevencao -N ""
+### Método 1: Deploy SOMENTE Frontend (Mais Rápido)
 
-# Copiar chave pública para VPS
-ssh-copy-id -i ~/.ssh/vps_prevencao.pub root@31.97.82.235
-# Digitar senha: beto3107@
-
-# Testar conexão sem senha
-ssh -i ~/.ssh/vps_prevencao root@31.97.82.235 "echo 'Conexão OK!'"
-```
-
-### Método 2: Deploy Completo com Bash Tool
-
-**Usar este comando após fazer commit:**
+**Quando alterar APENAS arquivos em `packages/frontend/`:**
 
 ```bash
-ssh -i ~/.ssh/vps_prevencao root@31.97.82.235 "
-  cd /root/prevencao-no-radar &&
-  git pull &&
-  docker-compose -f InstaladorVPS/docker-compose.yml build frontend &&
-  docker-compose -f InstaladorVPS/docker-compose.yml build backend &&
-  docker-compose -f InstaladorVPS/docker-compose.yml up -d &&
-  docker ps | grep prevencao
-"
+ssh -i ~/.ssh/vps_prevencao root@31.97.82.235 "cd /root/NOVO-PREVEN-O && git pull && docker compose -f InstaladorVPS/docker-compose-producao.yml build frontend && docker compose -f InstaladorVPS/docker-compose-producao.yml up -d frontend"
 ```
 
-**Explicação linha por linha:**
+### Método 2: Deploy SOMENTE Backend (Mais Rápido)
 
-1. `ssh -i ~/.ssh/vps_prevencao root@31.97.82.235` - Conecta via SSH com chave
-2. `cd /root/prevencao-no-radar` - Vai para diretório do projeto
-3. `git pull` - Puxa últimas alterações
-4. `docker-compose ... build frontend` - Faz build do frontend
-5. `docker-compose ... build backend` - Faz build do backend
-6. `docker-compose ... up -d` - Sobe containers em background
-7. `docker ps | grep prevencao` - Mostra containers rodando
+**Quando alterar APENAS arquivos em `packages/backend/`:**
+
+```bash
+ssh -i ~/.ssh/vps_prevencao root@31.97.82.235 "cd /root/NOVO-PREVEN-O && git pull && docker compose -f InstaladorVPS/docker-compose-producao.yml build backend && docker compose -f InstaladorVPS/docker-compose-producao.yml up -d backend"
+```
+
+### Método 3: Deploy Completo (Frontend + Backend)
+
+**Quando alterar ambos ou não tiver certeza:**
+
+```bash
+ssh -i ~/.ssh/vps_prevencao root@31.97.82.235 "cd /root/NOVO-PREVEN-O && git pull && docker compose -f InstaladorVPS/docker-compose-producao.yml build && docker compose -f InstaladorVPS/docker-compose-producao.yml up -d"
+```
+
+### Método 4: Ver Logs após Deploy
+
+**Verificar se deu tudo certo:**
+
+```bash
+# Ver logs do frontend
+ssh -i ~/.ssh/vps_prevencao root@31.97.82.235 "docker logs prevencao-frontend-prod --tail 50"
+
+# Ver logs do backend
+ssh -i ~/.ssh/vps_prevencao root@31.97.82.235 "docker logs prevencao-backend-prod --tail 50 -f"
+```
+
+### 🎯 Workflow Completo de Deploy
+
+**SEMPRE seguir esta ordem:**
+
+```bash
+# 1. No computador local - Commit e push
+cd "c:\Users\Administrator\Desktop\roberto-prevencao-no-radar-main"
+git add -A
+git commit -m "Descrição da alteração"
+git push origin main
+
+# 2. Deploy na VPS de produção
+ssh -i ~/.ssh/vps_prevencao root@31.97.82.235 "cd /root/NOVO-PREVEN-O && git pull && docker compose -f InstaladorVPS/docker-compose-producao.yml build frontend && docker compose -f InstaladorVPS/docker-compose-producao.yml up -d frontend"
+
+# 3. Verificar se subiu
+ssh -i ~/.ssh/vps_prevencao root@31.97.82.235 "docker ps | grep prevencao"
+
+# 4. Ver logs se necessário
+ssh -i ~/.ssh/vps_prevencao root@31.97.82.235 "docker logs prevencao-frontend-prod --tail 30"
+```
+
+### ❌ ERROS COMUNS E COMO EVITAR
+
+**Erro:** `no such file or directory: InstaladorVPS/docker-compose.yml`
+- ✅ **Solução:** Usar `docker-compose-producao.yml` em produção
+
+**Erro:** `cd: too many arguments`
+- ✅ **Solução:** Colocar aspas duplas no caminho: `cd "c:\Users\..."`
+
+**Erro:** `fatal: not a git repository`
+- ✅ **Solução:** Verificar se está no diretório `/root/NOVO-PREVEN-O`
 
 ### Método 3: Deploy Passo a Passo (Manual)
 
