@@ -19,7 +19,7 @@ export default function SetupCheck({ children }) {
   const checkSetupStatus = async () => {
     try {
       console.log('🔍 SetupCheck: Verificando status do setup...');
-      const response = await api.get('/setup/status');
+      const response = await api.get('/api/setup/status');
       const { needsSetup } = response.data;
 
       console.log('🔍 SetupCheck: needsSetup =', needsSetup);

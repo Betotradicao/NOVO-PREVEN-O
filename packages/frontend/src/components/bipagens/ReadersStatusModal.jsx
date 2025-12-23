@@ -28,7 +28,7 @@ export default function ReadersStatusModal({ onClose }) {
 
       // Buscar equipamentos e sessões ativas em paralelo
       const [equipmentsRes, sessionsRes] = await Promise.all([
-        api.get('/equipments'),
+        api.get('/api/equipments'),
         equipmentSessionsService.getAllActiveSessions()
       ]);
 
