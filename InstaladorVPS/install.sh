@@ -98,7 +98,7 @@ fi
 
 # Iniciar Tailscale em modo não-interativo (não bloqueia o script)
 echo "🚀 Iniciando Tailscale..."
-tailscale up --accept-routes --shields-up=false > /tmp/tailscale-auth.log 2>&1 &
+tailscale up --accept-routes --shields-up=false 2>&1 | tee /tmp/tailscale-auth.log &
 TAILSCALE_PID=$!
 
 # Aguardar alguns segundos para o link de autenticação aparecer
