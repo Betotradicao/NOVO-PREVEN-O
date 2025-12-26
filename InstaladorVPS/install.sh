@@ -97,19 +97,51 @@ else
     echo "✅ Tailscale já instalado"
 fi
 
-# Iniciar Tailscale em modo não-interativo (não bloqueia o script)
+# Iniciar Tailscale
 echo "🚀 Iniciando Tailscale..."
-tailscale up --accept-routes --shields-up=false 2>&1 | tee /tmp/tailscale-auth.log &
-TAILSCALE_PID=$!
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🔐 AUTENTICAÇÃO DO TAILSCALE - VPS"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "Executando: tailscale up --accept-routes..."
+echo ""
 
-# Aguardar alguns segundos para o link de autenticação aparecer
-sleep 3
+# Executar tailscale up e capturar a saída
+tailscale up --accept-routes --shields-up=false > /tmp/tailscale-output.txt 2>&1
+
+# Ler o arquivo de saída
+cat /tmp/tailscale-output.txt
 
 # Tentar extrair o link de autenticação
-TAILSCALE_AUTH_URL=$(grep -o 'https://login.tailscale.com/a/[a-z0-9]*' /tmp/tailscale-auth.log | head -n 1)
+TAILSCALE_AUTH_URL=$(grep -o 'https://login.tailscale.com/a/[a-z0-9]*' /tmp/tailscale-output.txt | head -n 1)
 
-# Obter IP do Tailscale (pode estar vazio se ainda não autenticado)
+echo ""
+if [ -n "$TAILSCALE_AUTH_URL" ]; then
+    echo "⚠️  ATENÇÃO: Você precisa aprovar esta VPS no painel do Tailscale!"
+    echo ""
+    echo "🔗 Link de autenticação:"
+    echo "   $TAILSCALE_AUTH_URL"
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "📝 Passos:"
+    echo "   1. Abra o link acima no navegador"
+    echo "   2. Faça login no Tailscale (se necessário)"
+    echo "   3. Aprove a conexão desta VPS"
+    echo ""
+    read -p "Pressione ENTER após aprovar no painel do Tailscale... " </dev/tty
+    echo ""
+fi
+
+# Obter IP do Tailscale após autenticação
 TAILSCALE_IP=$(tailscale ip -4 2>/dev/null || echo "")
+
+if [ -n "$TAILSCALE_IP" ]; then
+    echo "✅ Tailscale conectado! IP da VPS: $TAILSCALE_IP"
+else
+    echo "⚠️  Tailscale não retornou IP. Verifique se foi aprovado corretamente."
+fi
 
 echo ""
 
