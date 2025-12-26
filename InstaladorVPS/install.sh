@@ -100,6 +100,13 @@ fi
 # Iniciar Tailscale
 echo "🚀 Iniciando Tailscale..."
 echo ""
+
+# Fazer logout para forçar nova autenticação (apagar credenciais antigas)
+echo "🔄 Resetando autenticação do Tailscale..."
+tailscale logout 2>/dev/null || true
+sleep 1
+echo ""
+
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "🔐 AUTENTICAÇÃO DO TAILSCALE - VPS"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
