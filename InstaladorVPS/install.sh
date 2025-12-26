@@ -132,15 +132,35 @@ if [ -n "$TAILSCALE_AUTH_URL" ]; then
     echo ""
     read -p "Pressione ENTER após aprovar no painel do Tailscale... " </dev/tty
     echo ""
+
+    # Aguardar e verificar se o Tailscale foi aprovado
+    echo "🔄 Verificando aprovação do Tailscale..."
+    sleep 2
 fi
 
 # Obter IP do Tailscale após autenticação
 TAILSCALE_IP=$(tailscale ip -4 2>/dev/null || echo "")
 
+# Verificar se conseguiu o IP
+MAX_TENTATIVAS=10
+TENTATIVA=1
+
+while [ -z "$TAILSCALE_IP" ] && [ $TENTATIVA -le $MAX_TENTATIVAS ]; do
+    echo "⏳ Tentativa $TENTATIVA/$MAX_TENTATIVAS - Aguardando Tailscale retornar IP..."
+    sleep 3
+    TAILSCALE_IP=$(tailscale ip -4 2>/dev/null || echo "")
+    TENTATIVA=$((TENTATIVA + 1))
+done
+
 if [ -n "$TAILSCALE_IP" ]; then
-    echo "✅ Tailscale conectado! IP da VPS: $TAILSCALE_IP"
+    echo ""
+    echo "✅ Tailscale conectado com sucesso!"
+    echo "🌐 IP da VPS no Tailscale: $TAILSCALE_IP"
 else
-    echo "⚠️  Tailscale não retornou IP. Verifique se foi aprovado corretamente."
+    echo ""
+    echo "⚠️  Tailscale não retornou IP após aprovação."
+    echo "⚠️  Você pode configurar manualmente depois executando:"
+    echo "     sudo tailscale up --accept-routes"
 fi
 
 echo ""
