@@ -114,11 +114,10 @@ echo ""
 echo "Executando: tailscale up --accept-routes..."
 echo ""
 
-# Executar tailscale up e capturar a saída
-tailscale up --accept-routes --shields-up=false > /tmp/tailscale-output.txt 2>&1
+# Executar tailscale up e capturar a saída (mostra em tempo real E salva no arquivo)
+tailscale up --accept-routes --shields-up=false 2>&1 | tee /tmp/tailscale-output.txt
 
-# Ler o arquivo de saída
-cat /tmp/tailscale-output.txt
+echo ""
 
 # Tentar extrair o link de autenticação
 TAILSCALE_AUTH_URL=$(grep -o 'https://login.tailscale.com/a/[a-z0-9]*' /tmp/tailscale-output.txt | head -n 1)
