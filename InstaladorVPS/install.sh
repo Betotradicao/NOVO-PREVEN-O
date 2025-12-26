@@ -97,9 +97,13 @@ else
     echo "✅ Tailscale já instalado"
 fi
 
+# Fazer logout para limpar autenticação antiga (se houver)
+echo "🔄 Limpando autenticação anterior do Tailscale..."
+tailscale logout 2>/dev/null || true
+
 # Iniciar Tailscale em modo não-interativo (não bloqueia o script)
 echo "🚀 Iniciando Tailscale..."
-tailscale up --accept-routes --shields-up=false 2>&1 | tee /tmp/tailscale-auth.log &
+tailscale up --accept-routes --shields-up=false > /tmp/tailscale-auth.log 2>&1 &
 TAILSCALE_PID=$!
 
 # Aguardar alguns segundos para o link de autenticação aparecer
