@@ -43,25 +43,36 @@ echo ""
 
 echo "🔄 Verificando atualizações do código..."
 
-# Descobrir diretório do script
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-
-# Voltar para raiz do repositório
-cd "$SCRIPT_DIR/.."
-REPO_ROOT=$(pwd)
-
-# Verificar se é um repositório git
+# Verificar se já está em um repositório
 if [ -d ".git" ]; then
     echo "📥 Atualizando código do GitHub..."
     git fetch origin
     git reset --hard origin/main
     git pull origin main
+    REPO_ROOT=$(pwd)
     echo "✅ Código atualizado com sucesso"
 else
-    echo "⚠️  Não é um repositório git. Pulando atualização."
+    # Não está em repositório, precisa clonar
+    echo "📦 Clonando repositório do GitHub..."
+
+    # Criar diretório temporário
+    INSTALL_DIR="/root/prevencao-radar-install"
+
+    # Remover se já existir
+    rm -rf "$INSTALL_DIR"
+
+    # Clonar repositório
+    git clone https://github.com/Betotradicao/NOVO-PREVEN-O.git "$INSTALL_DIR"
+
+    # Ir para o diretório clonado
+    cd "$INSTALL_DIR"
+    REPO_ROOT=$(pwd)
+
+    echo "✅ Repositório clonado com sucesso"
 fi
 
 # Ir para diretório do instalador
+SCRIPT_DIR="$REPO_ROOT/InstaladorVPS"
 cd "$SCRIPT_DIR"
 echo ""
 
