@@ -100,55 +100,24 @@ fi
 # Fazer logout para limpar autenticação antiga (se houver)
 echo "🔄 Limpando autenticação anterior do Tailscale..."
 tailscale logout 2>/dev/null || true
-
-# Iniciar Tailscale em modo não-interativo (não bloqueia o script)
-echo "🚀 Iniciando Tailscale..."
-tailscale up --accept-routes --shields-up=false > /tmp/tailscale-auth.log 2>&1 &
-TAILSCALE_PID=$!
-
-# Aguardar alguns segundos para o link de autenticação aparecer
-sleep 5
-
-# Mostrar o que está no log (para debug)
-echo "📋 Verificando log do Tailscale..."
-cat /tmp/tailscale-auth.log
 echo ""
 
-# Tentar extrair o link de autenticação
-TAILSCALE_AUTH_URL=$(grep -o 'https://login.tailscale.com/a/[a-z0-9]*' /tmp/tailscale-auth.log | head -n 1)
-
-# Se encontrou link, mostrar e esperar aprovação
-if [ -n "$TAILSCALE_AUTH_URL" ]; then
-    echo ""
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "⚠️  ATENÇÃO: Você precisa aprovar esta VPS no painel do Tailscale!"
-    echo ""
-    echo "🔗 Link de autenticação:"
-    echo "   $TAILSCALE_AUTH_URL"
-    echo ""
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo ""
-    echo "📝 Passos:"
-    echo "   1. Abra o link acima no navegador"
-    echo "   2. Faça login no Tailscale (se necessário)"
-    echo "   3. Aprove a conexão desta VPS"
-    echo ""
-    read -p "Pressione ENTER após aprovar no painel do Tailscale... " </dev/tty
-    echo ""
-fi
+# Iniciar Tailscale e aguardar aprovação (roda em foreground)
+echo "🚀 Conectando ao Tailscale..."
+echo "⚠️  Aguarde... Um link de autenticação aparecerá abaixo"
+echo ""
+tailscale up --accept-routes --shields-up=false
 
 # Obter IP do Tailscale após aprovação
+echo ""
+echo "🔍 Obtendo IP do Tailscale..."
 TAILSCALE_IP=$(tailscale ip -4 2>/dev/null || echo "")
-
-# Se não conseguiu IP, tentar aguardar mais um pouco
-if [ -z "$TAILSCALE_IP" ]; then
-    echo "⏳ Aguardando aprovação do Tailscale..."
-    sleep 5
-    TAILSCALE_IP=$(tailscale ip -4 2>/dev/null || echo "")
-fi
 
 if [ -n "$TAILSCALE_IP" ]; then
     echo "✅ Tailscale conectado! IP: $TAILSCALE_IP"
+else
+    echo "⚠️  Não foi possível obter IP do Tailscale"
+    TAILSCALE_IP=""
 fi
 
 echo ""
