@@ -37,6 +37,15 @@ echo "✅ Docker encontrado: $(docker --version)"
 echo "✅ Docker Compose encontrado"
 echo ""
 
+# Verificar se Git está instalado
+if ! command -v git &> /dev/null; then
+    echo "📦 Instalando Git..."
+    apt-get update -qq
+    apt-get install -y -qq git
+    echo "✅ Git instalado"
+fi
+echo ""
+
 # ============================================
 # ATUALIZAR CÓDIGO DO GITHUB
 # ============================================
