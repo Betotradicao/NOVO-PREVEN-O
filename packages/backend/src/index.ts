@@ -102,7 +102,8 @@ const startServer = async () => {
     console.log('✅ Database connected successfully');
 
     // Seed de configurações do sistema (popula com dados do .env)
-    await seedConfigurations();
+    // DESABILITADO: sobrescreve configurações existentes
+    // await seedConfigurations();
 
     // Seed do usuário master (DESABILITADO - usar first-setup)
     // await seedMasterUser(AppDataSource);
