@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
 import Sidebar from '../components/Sidebar';
@@ -340,8 +340,13 @@ export default function Bipagens() {
   };
 
   // Calcular tempo pendente no formato HH:MM:SS
+  // Usa timeUpdate como dependência para forçar recálculo a cada segundo
   const calculatePendingTime = (eventDate, status) => {
     if (status !== 'pending') return '-';
+
+    // Força recálculo usando timeUpdate (incrementa a cada segundo)
+    // eslint-disable-next-line no-unused-vars
+    const _ = timeUpdate;
 
     // Usar horário local para 'now' e tratar eventTime como horário local também
     const now = new Date();
