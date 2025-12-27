@@ -218,6 +218,30 @@ export default function Bipagens() {
   // Estado para força re-render dos tempos pendentes
   const [, forceUpdate] = useState({});
 
+  // Ref para controle do interval de atualização de tempo
+  const timeUpdateIntervalRef = useRef(null);
+
+  // Intervalo de 1 segundo para atualizar os tempos pendentes
+  useEffect(() => {
+    // Limpar intervalo anterior
+    if (timeUpdateIntervalRef.current) {
+      clearInterval(timeUpdateIntervalRef.current);
+      timeUpdateIntervalRef.current = null;
+    }
+
+    // Atualiza os tempos pendentes a cada 1 segundo
+    timeUpdateIntervalRef.current = setInterval(() => {
+      forceUpdate({}); // Força re-render para atualizar os tempos
+    }, 1000);
+
+    // Cleanup ao desmontar componente
+    return () => {
+      if (timeUpdateIntervalRef.current) {
+        clearInterval(timeUpdateIntervalRef.current);
+      }
+    };
+  }, []); // Roda apenas uma vez ao montar
+
   // Auto-refresh a cada 3 segundos (apenas se autoRefreshEnabled estiver true)
   useEffect(() => {
     // Limpar intervalo anterior
@@ -231,7 +255,6 @@ export default function Bipagens() {
       intervalRef.current = setInterval(() => {
         fetchBipages(pagination.page, filters, true); // silent = true
         loadActiveSessions(); // Atualiza scanners logados
-        forceUpdate({}); // Força recálculo dos tempos pendentes
       }, 3000);
     }
 
@@ -316,7 +339,7 @@ export default function Bipagens() {
     return weight ? `${Number(weight).toFixed(3)} kg` : '-';
   };
 
-  // Calcular tempo pendente
+  // Calcular tempo pendente no formato HH:MM:SS
   const calculatePendingTime = (eventDate, status) => {
     if (status !== 'pending') return '-';
 
@@ -328,17 +351,19 @@ export default function Bipagens() {
 
     const diffMs = now - eventTime;
 
-    if (diffMs < 0) return '0s';
+    if (diffMs < 0) return '00:00:00';
 
-    const seconds = Math.floor(diffMs / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
+    const totalSeconds = Math.floor(diffMs / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
 
-    if (days > 0) return `${days}d ${hours % 24}h`;
-    if (hours > 0) return `${hours}h ${minutes % 60}m`;
-    if (minutes > 0) return `${minutes}m`;
-    return `${seconds}s`;
+    // Formatar com 2 dígitos (00:00:00)
+    const hh = String(hours).padStart(2, '0');
+    const mm = String(minutes).padStart(2, '0');
+    const ss = String(seconds).padStart(2, '0');
+
+    return `${hh}:${mm}:${ss}`;
   };
 
   // Classes para status
