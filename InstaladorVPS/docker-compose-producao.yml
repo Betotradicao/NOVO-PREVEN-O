@@ -58,16 +58,16 @@ services:
     container_name: prevencao-backend-prod
     restart: always
     environment:
-      # Database
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
+      # Database (network_mode: host usa localhost)
+      DB_HOST: localhost
+      DB_PORT: 5434
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
 
-      # MinIO (conexão interna entre containers)
-      MINIO_ENDPOINT: minio
-      MINIO_PORT: 9000
+      # MinIO (network_mode: host usa localhost)
+      MINIO_ENDPOINT: localhost
+      MINIO_PORT: 9010
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
       MINIO_USE_SSL: "false"
@@ -90,10 +90,7 @@ services:
       PORT: ${PORT}
       NODE_ENV: ${NODE_ENV}
       HOST_IP: ${HOST_IP}
-    ports:
-      - "3001:3001"
-    networks:
-      - prevencao-network
+    network_mode: host
     depends_on:
       postgres:
         condition: service_healthy
