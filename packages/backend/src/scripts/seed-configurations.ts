@@ -279,24 +279,23 @@ async function seedConfigurations() {
       }
     ];
 
-    // Inserir ou atualizar todas as configurações (upsert)
+    // Inserir APENAS configurações que não existem (não sobrescreve valores salvos)
     for (const config of configs) {
       // Buscar configuração existente
       let configuration = await configRepository.findOne({ where: { key: config.key } });
 
       if (configuration) {
-        // Atualizar valor existente
-        configuration.value = config.value;
+        // JÁ EXISTE - não sobrescrever
+        console.log(`   ⏭️  ${config.key}: já existe, mantido`);
       } else {
-        // Criar nova configuração
+        // NÃO EXISTE - criar nova
         configuration = configRepository.create({
           key: config.key,
           value: config.value
         });
+        await configRepository.save(configuration);
+        console.log(`   ✅ ${config.key}: ${config.value ? '***' : '(vazio)'}`);
       }
-
-      await configRepository.save(configuration);
-      console.log(`   ✅ ${config.key}: ${config.value ? '***' : '(vazio)'}`);
     }
 
     console.log('✅ Seed de configurações concluído com sucesso!');
