@@ -215,8 +215,8 @@ export default function Bipagens() {
     return session?.employee?.id || '';
   };
 
-  // Estado para força re-render dos tempos pendentes
-  const [, forceUpdate] = useState({});
+  // Estado para força re-render dos tempos pendentes a cada segundo
+  const [timeUpdate, setTimeUpdate] = useState(0);
 
   // Ref para controle do interval de atualização de tempo
   const timeUpdateIntervalRef = useRef(null);
@@ -231,7 +231,7 @@ export default function Bipagens() {
 
     // Atualiza os tempos pendentes a cada 1 segundo
     timeUpdateIntervalRef.current = setInterval(() => {
-      forceUpdate({}); // Força re-render para atualizar os tempos
+      setTimeUpdate(prev => prev + 1); // Incrementa para forçar re-render
     }, 1000);
 
     // Cleanup ao desmontar componente
