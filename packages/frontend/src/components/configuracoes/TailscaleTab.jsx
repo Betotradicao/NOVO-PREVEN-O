@@ -229,24 +229,6 @@ export default function TailscaleTab() {
                 )}
               </div>
             </div>
-
-            {/* VPS → DVR */}
-            {testResults.tests.vps_to_dvr && (
-              <div className={`p-4 rounded-lg border-2 ${getStatusColor(testResults.tests.vps_to_dvr.color)}`}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <span className="text-2xl">{getStatusIcon(testResults.tests.vps_to_dvr.status)}</span>
-                    <div>
-                      <p className="font-semibold">{testResults.tests.vps_to_dvr.description}</p>
-                      <p className="text-sm">{testResults.tests.vps_to_dvr.message}</p>
-                    </div>
-                  </div>
-                  {testResults.tests.vps_to_dvr.latency_ms && (
-                    <span className="text-sm font-mono">{testResults.tests.vps_to_dvr.latency_ms}ms</span>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         )}
 
@@ -267,14 +249,6 @@ export default function TailscaleTab() {
           <li className="flex items-start">
             <span className="mr-2">•</span>
             <span><strong>VPS → Cliente:</strong> Testa se a VPS consegue alcançar o computador do cliente via Tailscale</span>
-          </li>
-          <li className="flex items-start">
-            <span className="mr-2">•</span>
-            <span><strong>VPS → DVR:</strong> Testa se a VPS consegue alcançar o DVR na rede local do cliente</span>
-          </li>
-          <li className="flex items-start">
-            <span className="mr-2">•</span>
-            <span><strong>DVR HTTP:</strong> Testa se o DVR está respondendo requisições HTTP corretamente</span>
           </li>
         </ul>
       </div>
