@@ -4,6 +4,7 @@ import Sidebar from '../components/Sidebar';
 import { api } from '../utils/api';
 import { fetchSectors } from '../services/sectors.service';
 import EmployeeFilter from '../components/filters/EmployeeFilter';
+import NumericKeypad from '../components/common/NumericKeypad';
 
 export default function ResultadosDoDia() {
   const { user, logout } = useAuth();
@@ -26,6 +27,9 @@ export default function ResultadosDoDia() {
     count_not_verified: 0
   });
   const [sectors, setSectors] = useState([]);
+
+  // Estado para controlar o teclado numérico
+  const [showNumericKeypad, setShowNumericKeypad] = useState(false);
 
   // Filtros
   const [filters, setFilters] = useState({
@@ -154,6 +158,11 @@ export default function ResultadosDoDia() {
     // Limpa o intervalo quando o componente for desmontado
     return () => clearInterval(intervalId);
   }, [pagination.page, filters]); // Recriar intervalo se página ou filtros mudarem
+
+  // Submissão do código do teclado numérico
+  const handleNumericKeypadSubmit = (code) => {
+    setFilters(prev => ({ ...prev, search: code }));
+  };
 
   // Função para navegar páginas
   const handlePageChange = (newPage) => {
@@ -478,17 +487,29 @@ export default function ResultadosDoDia() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Buscar produto
                 </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={filters.search}
-                    onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                    placeholder="Código ou descrição..."
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500"
-                  />
-                  <svg className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                  </svg>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      value={filters.search}
+                      onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                      placeholder="Código ou descrição..."
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500"
+                    />
+                    <svg className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                  </div>
+                  <button
+                    onClick={() => setShowNumericKeypad(true)}
+                    className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-4 py-2 rounded-md font-semibold shadow-md transition flex items-center gap-2"
+                    title="Abrir teclado numérico"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+                    </svg>
+                    Código
+                  </button>
                 </div>
               </div>
             </div>
@@ -806,6 +827,14 @@ export default function ResultadosDoDia() {
           </div>
         </main>
       </div>
+
+      {/* Teclado Numérico */}
+      <NumericKeypad
+        isOpen={showNumericKeypad}
+        onClose={() => setShowNumericKeypad(false)}
+        onSubmit={handleNumericKeypadSubmit}
+        title="Digite o código do produto"
+      />
     </div>
   );
 }

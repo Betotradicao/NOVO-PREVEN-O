@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
 import Sidebar from '../components/Sidebar';
@@ -11,6 +11,34 @@ import EmployeeFilter from '../components/filters/EmployeeFilter';
 import Pagination from '../components/common/Pagination';
 import ScannerGunIcon from '../components/icons/ScannerGunIcon';
 import MotivoCancelamentoModal from '../components/bipagens/MotivoCancelamentoModal';
+import NumericKeypad from '../components/common/NumericKeypad';
+
+// Componente para exibir tempo pendente em tempo real
+function PendingTimeDisplay({ eventDate, status, timeUpdate }) {
+  if (status !== 'pending') return <span className="text-gray-400">-</span>;
+
+  // Usar horário local para 'now' e tratar eventTime como horário local também
+  const now = new Date();
+
+  // Parse da data do evento mantendo como horário local (sem conversão UTC)
+  const eventTime = new Date(eventDate.replace('Z', ''));
+
+  const diffMs = now - eventTime;
+
+  if (diffMs < 0) return <span className="text-yellow-600 font-medium">00:00:00</span>;
+
+  const totalSeconds = Math.floor(diffMs / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  // Formatar com 2 dígitos (00:00:00)
+  const hh = String(hours).padStart(2, '0');
+  const mm = String(minutes).padStart(2, '0');
+  const ss = String(seconds).padStart(2, '0');
+
+  return <span className="text-yellow-600 font-medium">{`${hh}:${mm}:${ss}`}</span>;
+}
 
 export default function Bipagens() {
   const { user, logout } = useAuth();
@@ -53,6 +81,9 @@ export default function Bipagens() {
   // Estado para controlar o modal de motivo de cancelamento
   const [showMotivoCancelamentoModal, setShowMotivoCancelamentoModal] = useState(false);
   const [bipToCancel, setBipToCancel] = useState(null);
+
+  // Estado para controlar o teclado numérico
+  const [showNumericKeypad, setShowNumericKeypad] = useState(false);
 
   // Estado para setores
   const [sectors, setSectors] = useState([]);
@@ -276,6 +307,13 @@ export default function Bipagens() {
     }
   };
 
+  // Submissão do código do teclado numérico
+  const handleNumericKeypadSubmit = (code) => {
+    const newFilters = { ...filters, search: code };
+    setFilters(newFilters);
+    fetchBipages(1, newFilters);
+  };
+
   // Mudança de página
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= pagination.totalPages) {
@@ -338,36 +376,6 @@ export default function Bipagens() {
   const formatWeight = (weight) => {
     return weight ? `${Number(weight).toFixed(3)} kg` : '-';
   };
-
-  // Calcular tempo pendente no formato HH:MM:SS
-  // Usa timeUpdate como dependência para forçar recálculo a cada segundo
-  const calculatePendingTime = useMemo(() => {
-    return (eventDate, status) => {
-      if (status !== 'pending') return '-';
-
-      // Usar horário local para 'now' e tratar eventTime como horário local também
-      const now = new Date();
-
-      // Parse da data do evento mantendo como horário local (sem conversão UTC)
-      const eventTime = new Date(eventDate.replace('Z', ''));
-
-      const diffMs = now - eventTime;
-
-      if (diffMs < 0) return '00:00:00';
-
-      const totalSeconds = Math.floor(diffMs / 1000);
-      const hours = Math.floor(totalSeconds / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
-
-      // Formatar com 2 dígitos (00:00:00)
-      const hh = String(hours).padStart(2, '0');
-      const mm = String(minutes).padStart(2, '0');
-      const ss = String(seconds).padStart(2, '0');
-
-      return `${hh}:${mm}:${ss}`;
-    };
-  }, [timeUpdate]); // Recalcula quando timeUpdate mudar
 
   // Classes para status
   const getStatusColor = (status) => {
@@ -867,13 +875,25 @@ export default function Bipagens() {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Buscar produto (código ou descrição)
             </label>
-            <input
-              type="text"
-              value={filters.search}
-              onChange={(e) => handleFilterChange({ ...filters, search: e.target.value })}
-              placeholder="Ex: 03704 ou Coxão Mole"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500"
-            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={filters.search}
+                onChange={(e) => handleFilterChange({ ...filters, search: e.target.value })}
+                placeholder="Ex: 03704 ou Coxão Mole"
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500"
+              />
+              <button
+                onClick={() => setShowNumericKeypad(true)}
+                className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-4 py-2 rounded-md font-semibold shadow-md transition flex items-center gap-2"
+                title="Abrir teclado numérico"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+                </svg>
+                Código
+              </button>
+            </div>
           </div>
 
           {/* Filtro de Setor */}
@@ -1066,9 +1086,11 @@ export default function Bipagens() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        <span className={bip.status === 'pending' ? 'text-yellow-600 font-medium' : 'text-gray-400'}>
-                          {calculatePendingTime(bip.event_date, bip.status)}
-                        </span>
+                        <PendingTimeDisplay
+                          eventDate={bip.event_date}
+                          status={bip.status}
+                          timeUpdate={timeUpdate}
+                        />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         <div className="flex gap-2">
@@ -1206,6 +1228,14 @@ export default function Bipagens() {
         }}
         onConfirm={confirmCancelBip}
         loading={cancellingId !== null}
+      />
+
+      {/* Teclado Numérico */}
+      <NumericKeypad
+        isOpen={showNumericKeypad}
+        onClose={() => setShowNumericKeypad(false)}
+        onSubmit={handleNumericKeypadSubmit}
+        title="Digite o código do produto"
       />
     </div>
   );
