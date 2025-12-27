@@ -338,6 +338,64 @@ sleep 5
 rm -f /tmp/fix-minio-config.js
 
 # ============================================
+# DETECTAR E SALVAR IPs DO TAILSCALE
+# ============================================
+
+echo ""
+echo "🔧 Detectando IPs do Tailscale..."
+
+# Detectar IPs usando tailscale status --json
+TAILSCALE_JSON=$(tailscale status --json 2>/dev/null || echo "{}")
+VPS_TAILSCALE_IP=$(echo "$TAILSCALE_JSON" | jq -r '.Self.TailscaleIPs[0] // ""')
+CLIENT_TAILSCALE_IP=$(echo "$TAILSCALE_JSON" | jq -r '.Peer | to_entries | .[0].value.TailscaleIPs[0] // ""')
+
+if [ -n "$VPS_TAILSCALE_IP" ]; then
+  echo "✅ IP Tailscale da VPS detectado: $VPS_TAILSCALE_IP"
+
+  # Criar script temporário para salvar IPs no banco
+  cat > /tmp/save-tailscale-ips.js << ENDOFSCRIPT
+const { AppDataSource } = require('./dist/config/database');
+const { Configuration } = require('./dist/entities/Configuration');
+
+AppDataSource.initialize().then(async () => {
+  const repo = AppDataSource.getRepository(Configuration);
+
+  // Salvar IP da VPS
+  if ('$VPS_TAILSCALE_IP') {
+    await repo.update({ key: 'tailscale_vps_ip' }, { value: '$VPS_TAILSCALE_IP' });
+    console.log('✅ IP Tailscale VPS salvo: $VPS_TAILSCALE_IP');
+  }
+
+  // Salvar IP do Cliente se detectado
+  if ('$CLIENT_TAILSCALE_IP') {
+    await repo.update({ key: 'tailscale_client_ip' }, { value: '$CLIENT_TAILSCALE_IP' });
+    console.log('✅ IP Tailscale Cliente salvo: $CLIENT_TAILSCALE_IP');
+  }
+
+  process.exit(0);
+}).catch(err => {
+  console.error('❌ Erro ao salvar IPs Tailscale:', err.message);
+  process.exit(1);
+});
+ENDOFSCRIPT
+
+  # Copiar e executar script no container
+  docker cp /tmp/save-tailscale-ips.js prevencao-backend-prod:/app/save-tailscale-ips.js 2>/dev/null
+  docker exec prevencao-backend-prod node /app/save-tailscale-ips.js 2>/dev/null
+
+  # Limpar arquivo temporário
+  rm -f /tmp/save-tailscale-ips.js
+
+  if [ -n "$CLIENT_TAILSCALE_IP" ]; then
+    echo "✅ IP Tailscale do Cliente detectado: $CLIENT_TAILSCALE_IP"
+  else
+    echo "⚠️  Nenhum cliente Tailscale conectado ainda"
+  fi
+else
+  echo "⚠️  Tailscale não está ativo ou não tem IPs atribuídos"
+fi
+
+# ============================================
 # EXIBIR STATUS
 # ============================================
 
