@@ -58,15 +58,15 @@ services:
     container_name: prevencao-backend-prod
     restart: always
     environment:
-      # Database (network_mode: host usa localhost)
-      DB_HOST: localhost
+      # Database (acessa via porta exposta no host)
+      DB_HOST: 127.0.0.1
       DB_PORT: 5434
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
 
-      # MinIO (network_mode: host usa localhost)
-      MINIO_ENDPOINT: localhost
+      # MinIO (acessa via porta exposta no host)
+      MINIO_ENDPOINT: 127.0.0.1
       MINIO_PORT: 9010
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
@@ -90,20 +90,10 @@ services:
       PORT: ${PORT}
       NODE_ENV: ${NODE_ENV}
       HOST_IP: ${HOST_IP}
+    # Usa rede do host para acessar Tailscale
     network_mode: host
-    depends_on:
-      postgres:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
     volumes:
       - backend-uploads:/app/uploads
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.prevencao-backend.rule=Host(`prevencaonoradar.com.br`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.prevencao-backend.entrypoints=websecure"
-      - "traefik.http.routers.prevencao-backend.tls.certresolver=letsencryptresolver"
-      - "traefik.http.services.prevencao-backend.loadbalancer.server.port=3001"
 
   # ==========================================
   # FRONTEND (React + Vite) - BUILD ESTÁTICO
