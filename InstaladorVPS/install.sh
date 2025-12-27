@@ -299,6 +299,45 @@ echo "⏳ Aguardando containers iniciarem..."
 sleep 10
 
 # ============================================
+# CORRIGIR CONFIGURAÇÕES MINIO NO BANCO
+# ============================================
+
+echo ""
+echo "🔧 Corrigindo configurações MinIO no banco de dados..."
+
+# Criar script temporário para corrigir MinIO config
+cat > /tmp/fix-minio-config.js << 'ENDOFSCRIPT'
+const { AppDataSource } = require('./dist/config/database');
+const { Configuration } = require('./dist/entities/Configuration');
+
+AppDataSource.initialize().then(async () => {
+  const repo = AppDataSource.getRepository(Configuration);
+
+  // Atualizar configurações MinIO para usar rede interna Docker
+  await repo.update({ key: 'minio_endpoint' }, { value: 'minio' });
+  await repo.update({ key: 'minio_port' }, { value: '9000' });
+
+  console.log('✅ Configurações MinIO atualizadas para rede interna Docker');
+  process.exit(0);
+}).catch(err => {
+  console.error('❌ Erro ao atualizar configurações:', err.message);
+  process.exit(1);
+});
+ENDOFSCRIPT
+
+# Copiar script para container e executar
+docker cp /tmp/fix-minio-config.js prevencao-backend-prod:/app/fix-minio-config.js 2>/dev/null
+docker exec prevencao-backend-prod node /app/fix-minio-config.js 2>/dev/null
+
+# Reiniciar backend para aplicar mudanças
+echo "🔄 Reiniciando backend para aplicar configurações..."
+docker restart prevencao-backend-prod > /dev/null 2>&1
+sleep 5
+
+# Limpar arquivo temporário
+rm -f /tmp/fix-minio-config.js
+
+# ============================================
 # EXIBIR STATUS
 # ============================================
 
