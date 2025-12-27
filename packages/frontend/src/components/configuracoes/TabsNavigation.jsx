@@ -1,14 +1,14 @@
 export default function TabsNavigation({ activeTab, onChange, pageType = 'config' }) {
   // Abas para Configurações de REDE
   const redeTabs = [
-    { id: 'modulos', label: 'Módulos' },
-    { id: 'empresa', label: 'Empresa' },
+    { id: 'tailscale', label: 'Tailscale' },
     { id: 'apis', label: 'APIs' },
     { id: 'security', label: 'Segurança' },
-    { id: 'email', label: 'Email' },
     { id: 'email-monitor', label: 'Monitor Email' },
-    { id: 'tailscale', label: 'Tailscale' },
-    { id: 'cron-monitor', label: 'CRON Monitor' }
+    { id: 'email', label: 'Email' },
+    { id: 'cron-monitor', label: 'CRON Monitor' },
+    { id: 'empresa', label: 'Empresa' },
+    { id: 'modulos', label: 'Módulos' }
   ];
 
   // Abas para Configurações normais

@@ -19,7 +19,7 @@ export default function ConfiguracoesRede() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(() => {
-    return searchParams.get('tab') || 'modulos';
+    return searchParams.get('tab') || 'tailscale';
   });
 
   // Estado para controle de autenticação master
