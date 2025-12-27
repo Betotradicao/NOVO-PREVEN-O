@@ -297,6 +297,43 @@ Senha: 312013@#
 
 ---
 
+## 🔑 Liberar Acesso Automático do Claude (Para Novas VPS)
+
+Se você instalou o sistema em uma nova VPS e quer que o Claude possa acessar e atualizar automaticamente, siga estes passos:
+
+### **Passo 1: Conectar na VPS via Painel Hostinger**
+
+1. Acesse o painel da Hostinger
+2. Vá em **VPS** → Selecione a VPS
+3. Clique em **Terminal** ou **Console**
+4. Faça login como **root**
+
+### **Passo 2: Adicionar Chave SSH do Claude**
+
+Cole este comando de uma vez no terminal da VPS:
+
+```bash
+mkdir -p ~/.ssh && echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCY9VO8bBWSHIscv4nbG9AK1UQY58nwhp35lipY2x5cv9Z//cZR8TX5YGC6bjo1/2Q4Voue/NWSjC//JlmCFuitC7fqMjXL+s/1WDEdhHjsUNczxrBm1siD17Qghsq4XR+rRN0jAafjK/6uNZZLaHekaoK/QPZ05YZsQH/lAr57vtwDRNjrp77H0Du2sPcwQ/xuguSkjVavGYK0DLLxq8aU4f4WfU9ynatsBsrTk1gAFPqFF+ExcVyYNFW2y3Wv1IGmpqFvtUyQ350CEvoZBDdB0qBzijRCT98n2H1xw+wmF5b7fehQmvxaoqBDkjvBiE60yCOyuVRINT/zUhl3jrLnjvo5gpXjR+f1lNvLvx9NXDc03UyVxtGtGJZyC6r3edMy+xhFtefP63Oyi+2sOc4TbDAQlVMCArvKbl2eRgh2OStB8z19jHJHkFtjo9jKlx9hMiT3yeBtuYNRnAKmn2I6aN5HAPiAa1R7uVSEbfKKO4RBnDLQN1F+7CzVNkEvF6b6eBdyMjEjVbOMmj9GtvPSTYtPLCNRygvN2ppr0CXRW+sCXSq3nYj6CNmCxBPmjtpDmefAHUbchjcSML+yHGcKnWen+9Fvz2GCRwYWLVW7D5sFUAUsXfqGzZNQ/YyO/IIxPVlqHGZs3lOiQgrUYyhEdJefcIFzLamI68W14SwSkw== Administrator@SRV_TRADICAO' >> ~/.ssh/authorized_keys && chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys && echo 'Chave SSH adicionada com sucesso!'
+```
+
+### **Passo 3: Verificar se Funcionou**
+
+Se aparecer a mensagem:
+```
+Chave SSH adicionada com sucesso!
+```
+
+**Pronto!** O Claude agora pode acessar e atualizar a VPS automaticamente sem pedir senha.
+
+### **Nota Importante:**
+
+- Este comando adiciona a chave SSH pública do Claude à VPS
+- Depois disso, o Claude pode executar comandos remotamente
+- É seguro porque apenas adiciona uma chave de leitura/execução, não compartilha senhas
+- A chave é específica do computador do administrador
+
+---
+
 ## 🔄 Comandos Úteis
 
 ### **Ver logs dos containers:**

@@ -1176,7 +1176,11 @@ export default function Bipagens() {
                   </div>
                   {bip.status === 'pending' && (
                     <div className="text-sm text-yellow-600 font-medium mt-2">
-                      Pendente há: {calculatePendingTime(bip.event_date, bip.status)}
+                      Pendente há: <PendingTimeDisplay
+                        eventDate={bip.event_date}
+                        status={bip.status}
+                        timeUpdate={timeUpdate}
+                      />
                     </div>
                   )}
                   {(bip.status === 'pending' || bip.status === 'cancelled') && (
