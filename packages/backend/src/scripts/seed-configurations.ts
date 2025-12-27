@@ -200,6 +200,50 @@ async function seedConfigurations() {
         key: 'evolution_whatsapp_group_id',
         value: '120363422563235781@g.us',
         description: 'ID do grupo WhatsApp para notificações'
+      },
+
+      // Email - Recuperação de Senha
+      {
+        key: 'email_user',
+        value: process.env.EMAIL_USER || 'betotradicao76@gmail.com',
+        description: 'Email para envio (Gmail)'
+      },
+      {
+        key: 'email_pass',
+        value: process.env.EMAIL_PASS || 'ylljjijqstxnwogk',
+        description: 'Senha de app do Gmail'
+      },
+
+      // Monitor de Email DVR
+      {
+        key: 'dvr_ip',
+        value: '',
+        description: 'IP do DVR na rede local'
+      },
+      {
+        key: 'dvr_usuario',
+        value: 'admin',
+        description: 'Usuário do DVR'
+      },
+      {
+        key: 'dvr_senha',
+        value: '',
+        description: 'Senha do DVR'
+      },
+      {
+        key: 'dvr_email_senha',
+        value: '',
+        description: 'Senha do email do DVR'
+      },
+      {
+        key: 'dvr_monitor_intervalo',
+        value: '360',
+        description: 'Intervalo do monitor em segundos (padrão: 360s = 6min)'
+      },
+      {
+        key: 'dvr_monitor_auto_start',
+        value: 'false',
+        description: 'Auto-iniciar monitor de email'
       }
     ];
 
